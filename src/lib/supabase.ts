@@ -26,3 +26,41 @@ export async function getSettings(): Promise<Record<string, string>> {
   const { data } = await supabase().from('site_settings').select('key, value');
   return Object.fromEntries((data ?? []).map((s) => [s.key, s.value]));
 }
+
+export type SiteCategory = {
+  id: string;
+  name: string;
+  icon_key: string;
+};
+
+// Same `categories` table the mobile app reads (ostati-app's
+// src/services/categoryService.ts) — the admin panel's "კატეგორიები"
+// section is the only writer (0070/0072). Only active ones, in the same
+// order the app shows them.
+export async function getCategories(): Promise<SiteCategory[]> {
+  const { data } = await supabase()
+    .from('categories')
+    .select('id, name, icon_key')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+  return data ?? [];
+}
+
+export type SiteBlockItem = {
+  id: string;
+  icon_key: string;
+  title: string;
+  description: string;
+};
+
+// Ordered-list content sections that don't fit site_pages' single
+// title+body shape (0074) — e.g. block_key='home_features' or
+// 'how_it_works_steps'. Admin-editable from /admin/site/blocks.
+export async function getBlocks(blockKey: string): Promise<SiteBlockItem[]> {
+  const { data } = await supabase()
+    .from('site_blocks')
+    .select('id, icon_key, title, description')
+    .eq('block_key', blockKey)
+    .order('sort_order', { ascending: true });
+  return data ?? [];
+}

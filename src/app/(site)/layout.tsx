@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { getSettings } from "@/lib/supabase";
 
@@ -15,11 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ostati — იპოვე სანდო ოსტატი",
+  metadataBase: new URL("https://ostati.ge"),
+  title: {
+    default: "Ostati — იპოვე სანდო ოსტატი",
+    template: "%s | Ostati",
+  },
   description: "Ostati აკავშირებს მომხმარებლებს ადგილობრივ ოსტატებთან.",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSettings();
 
   return (
