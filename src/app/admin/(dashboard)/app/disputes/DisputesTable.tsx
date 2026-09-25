@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
 import { resolveDispute } from './actions';
@@ -78,8 +79,8 @@ function DisputeCard({ job }: { job: DisputedJobRow }) {
         </button>
         <button
           disabled={pending}
-          onClick={() => {
-            if (!confirm('დარწმუნებული ხარ? სამუშაო გაუქმდება — მომხმარებელს ემხრობი.')) return;
+          onClick={async () => {
+            if (!(await ask('დარწმუნებული ხარ? სამუშაო გაუქმდება — მომხმარებელს ემხრობი.'))) return;
             setError(null);
             startTransition(async () => {
               const res = await resolveDispute(job.id, 'cancel');

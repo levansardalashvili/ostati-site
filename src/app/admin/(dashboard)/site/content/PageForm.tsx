@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useMemo, useState, useTransition } from 'react';
 import { marked } from 'marked';
 import { createPage, deletePage, updatePage } from './actions';
@@ -29,8 +30,8 @@ export function PageForm({ mode, initial }: { mode: 'create' | 'edit'; initial: 
 
   const html = useMemo(() => (preview ? (marked.parse(content, { async: false }) as string) : ''), [preview, content]);
 
-  const onDelete = () => {
-    if (!window.confirm(`გვერდის „${initial.title}“ წაშლა? ეს შეუქცევადია და მისამართი (/${initial.slug}) საიტზე აღარ იმუშავებს.`)) return;
+  const onDelete = async () => {
+    if (!(await ask(`გვერდის „${initial.title}“ წაშლა? ეს შეუქცევადია და მისამართი (/${initial.slug}) საიტზე აღარ იმუშავებს.`))) return;
     startTransition(async () => {
       const res = await deletePage(initial.slug);
       if (res?.error) setError(res.error);

@@ -30,6 +30,7 @@ const AREAS = [
     items: [
       { href: '/admin/site/content', label: 'გვერდები და პარამეტრები' },
       { href: '/admin/site/blocks', label: 'გვერდის სექციები' },
+      { href: '/admin/site/screenshots', label: 'აპის ეკრანები' },
     ],
   },
 ];

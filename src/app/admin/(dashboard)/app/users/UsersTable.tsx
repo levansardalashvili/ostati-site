@@ -1,5 +1,6 @@
 'use client';
 
+import { askText } from '@/lib/dialog';
 import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
@@ -57,8 +58,8 @@ function UserRowView({ user }: { user: UserRow }) {
   const [reason, setReason] = useState(user.suspensionReason);
   const [verified, setVerified] = useState(user.verified);
 
-  const revoke = () => {
-    const why = window.prompt('ვერიფიკაციის მოხსნის მიზეზი (ეცნობება ოსტატს, არასავალდებულო):');
+  const revoke = async () => {
+    const why = await askText('ვერიფიკაციის მოხსნის მიზეზი (ეცნობება ოსტატს, არასავალდებულო):');
     if (why === null) return;
     setError(null);
     startTransition(async () => {
@@ -70,9 +71,9 @@ function UserRowView({ user }: { user: UserRow }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const toggle = () => {
+  const toggle = async () => {
     const next = !suspended;
-    const entered = next ? window.prompt('შეჩერების მიზეზი (არასავალდებულო):') : null;
+    const entered = next ? await askText('შეჩერების მიზეზი (არასავალდებულო):') : null;
     if (next && entered === null) return; // prompt გაუქმდა
     setError(null);
     startTransition(async () => {

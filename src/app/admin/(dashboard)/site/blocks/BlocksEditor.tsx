@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { ICON_KEYS } from './icons';
 import { createBlockItem, deleteBlockItem, moveBlockItem, updateBlockItem } from './actions';
@@ -156,8 +157,8 @@ function ItemRow({
           რედაქტირება
         </button>
         <button
-          onClick={() => {
-            if (confirm(`წავშალო "${item.title}"?`)) {
+          onClick={async () => {
+            if (await ask(`წავშალო "${item.title}"?`)) {
               startTransition(async () => {
                 await deleteBlockItem(item.id, blockKey);
               });

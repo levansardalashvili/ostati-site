@@ -1,5 +1,6 @@
 'use client';
 
+import { askText } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
 import { moderateProviderContent, removeJobPhoto } from './actions';
@@ -19,8 +20,8 @@ const btn =
 function useModeration() {
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const run = (fn: (reason: string | null) => Promise<{ error?: string; warning?: string }>) => {
-    const reason = window.prompt('მოხსნის მიზეზი (ეცნობება მფლობელს, არასავალდებულო):');
+  const run = async (fn: (reason: string | null) => Promise<{ error?: string; warning?: string }>) => {
+    const reason = await askText('მოხსნის მიზეზი (ეცნობება მფლობელს, არასავალდებულო):');
     if (reason === null) return;
     setMsg(null);
     startTransition(async () => {

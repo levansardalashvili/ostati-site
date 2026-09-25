@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { sendBroadcast } from './actions';
 
@@ -19,8 +20,8 @@ export function BroadcastForm({ counts }: { counts: { customer: number; provider
   const recipients = audience === 'all' ? counts.customer + counts.provider : counts[audience as 'customer' | 'provider'];
   const valid = title.trim().length > 0 && title.length <= 80 && body.trim().length > 0 && body.length <= 300;
 
-  const send = () => {
-    if (!window.confirm(`გაიგზავნება ${recipients} მომხმარებელზე:\n\n${title.trim()}\n${body.trim()}\n\nგაგრძელება?`)) return;
+  const send = async () => {
+    if (!(await ask(`გაიგზავნება ${recipients} მომხმარებელზე:\n\n${title.trim()}\n${body.trim()}\n\nგაგრძელება?`))) return;
     setMsg(null);
     startTransition(async () => {
       const res = await sendBroadcast(title, body, audience);

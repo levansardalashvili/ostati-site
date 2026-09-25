@@ -8,7 +8,7 @@ import { Menu } from 'lucide-react';
 export function MobileMenu({ items }: { items: { href: string; label: string }[] }) {
   const pathname = usePathname();
   return (
-    <details key={pathname} className="relative block lg:hidden">
+    <details key={pathname} className="relative block xl:hidden">
       <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">
         <Menu size={16} /> მენიუ
       </summary>

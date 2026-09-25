@@ -30,6 +30,9 @@ const ACTIONS: Record<string, string> = {
   site_block_insert: 'საიტი: სექციის დამატება',
   site_block_update: 'საიტი: სექციის ცვლილება',
   site_block_delete: 'საიტი: სექციის წაშლა',
+  site_screenshot_insert: 'საიტი: ეკრანის დამატება',
+  site_screenshot_update: 'საიტი: ეკრანის რიგის ცვლილება',
+  site_screenshot_delete: 'საიტი: ეკრანის წაშლა',
   chat_view: 'რეპორტირებული საუბრის ნახვა',
 };
 
@@ -57,6 +60,9 @@ function summarize(action: string, d: Details): string {
     case 'site_page_insert':
     case 'site_page_update':
     case 'site_page_delete': return `${d.title}${d.published === false ? ' · დრაფტი' : ''}`;
+    case 'site_screenshot_insert':
+    case 'site_screenshot_update':
+    case 'site_screenshot_delete': return String(d.path ?? '');
     case 'site_block_insert':
     case 'site_block_update':
     case 'site_block_delete': return `${d.block_key} · ${d.title}`;

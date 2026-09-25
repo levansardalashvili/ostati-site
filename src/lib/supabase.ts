@@ -84,3 +84,15 @@ export async function getBlocks(blockKey: string): Promise<SiteBlockItem[]> {
     .order('sort_order', { ascending: true });
   return data ?? [];
 }
+
+export type SiteScreenshot = { id: string; url: string; alt: string };
+
+export function screenshotUrl(path: string): string {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/site-media/${path}`;
+}
+
+// აპის რეალური ეკრანები (ადმინიდან იმართება) — ცარიელი სია = საიტი დემო ეკრანებზე გადადის
+export async function getScreenshots(): Promise<SiteScreenshot[]> {
+  const { data } = await supabase().from('site_screenshots').select('id, path, alt').order('sort_order', { ascending: true });
+  return (data ?? []).map((s) => ({ id: s.id, alt: s.alt, url: screenshotUrl(s.path) }));
+}

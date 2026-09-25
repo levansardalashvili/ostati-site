@@ -1,5 +1,6 @@
 'use client';
 
+import { askText, ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { setUserSuspended, revokeVerification } from '../actions';
 
@@ -19,19 +20,19 @@ export function UserActions({
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const suspend = () => {
+  const suspend = async () => {
     let reason: string | undefined;
     if (!suspended) {
-      const entered = window.prompt('შეჩერების მიზეზი (მომხმარებელს ეცნობება, არასავალდებულო):');
+      const entered = await askText('შეჩერების მიზეზი (მომხმარებელს ეცნობება, არასავალდებულო):');
       if (entered === null) return;
       reason = entered.trim() || undefined;
-    } else if (!window.confirm('ანგარიშის აღდგენა?')) return;
+    } else if (!(await ask('ანგარიშის აღდგენა?'))) return;
     setMsg(null);
     startTransition(async () => setMsg((await setUserSuspended(userId, !suspended, reason)).error ?? null));
   };
 
-  const revoke = () => {
-    const why = window.prompt('ვერიფიკაციის მოხსნის მიზეზი (არასავალდებულო):');
+  const revoke = async () => {
+    const why = await askText('ვერიფიკაციის მოხსნის მიზეზი (არასავალდებულო):');
     if (why === null) return;
     setMsg(null);
     startTransition(async () => setMsg((await revokeVerification(userId, why.trim() || undefined)).error ?? null));

@@ -1,5 +1,6 @@
 'use client';
 
+import { askText } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
 import { updateReportStatus, setUserSuspended, getReportConversation, type ConversationMessage } from './actions';
@@ -65,10 +66,10 @@ function ReportCard({ report, kind }: { report: ReportRow; kind: 'job' | 'chat' 
     });
   };
 
-  const toggleSuspend = () => {
+  const toggleSuspend = async () => {
     if (!report.reportedUserId) return;
     const next = !suspended;
-    const reason = next ? window.prompt('შეჩერების მიზეზი (არასავალდებულო):') ?? undefined : undefined;
+    const reason = next ? (await askText('შეჩერების მიზეზი (არასავალდებულო):')) ?? undefined : undefined;
     if (next && reason === undefined) return; // user cancelled the prompt
     setSuspendError(null);
     startSuspendTransition(async () => {

@@ -33,7 +33,7 @@ export function SiteHeader({ pages = [], siteName, ctaLabel = 'გადმო�
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
         <Logo name={siteName} />
-        <nav className="hidden items-center gap-6 whitespace-nowrap lg:flex">
+        <nav className="hidden ml-6 items-center gap-4 whitespace-nowrap xl:flex 2xl:gap-6">
           {items.map((item) => (
             <Link
               key={item.href}

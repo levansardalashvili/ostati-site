@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { saveGate } from './actions';
 
@@ -21,7 +22,7 @@ export function GateForm({ initial }: { initial: Gate }) {
     minVersion.trim() !== saved.min_version || maintenance !== saved.maintenance ||
     message.trim() !== saved.maintenance_message || url.trim() !== saved.update_url;
 
-  const save = () => {
+  const save = async () => {
     const warn =
       (maintenance && !saved.maintenance
         ? 'ტექნიკური რეჟიმის ჩართვა ყველა მომხმარებელს დაუბლოკავს აპს. გაგრძელება?'
@@ -29,7 +30,7 @@ export function GateForm({ initial }: { initial: Gate }) {
       (minVersion.trim() && minVersion.trim() !== saved.min_version
         ? `${minVersion.trim()}-ზე ძველი ვერსიის მომხმარებლებს აპი დაებლოკებათ და განახლება მოეთხოვებათ. გაგრძელება?`
         : '');
-    if (warn && !window.confirm(warn)) return;
+    if (warn && !(await ask(warn))) return;
     setMsg(null);
     startTransition(async () => {
       const res = await saveGate(minVersion.trim(), maintenance, message.trim(), url.trim());

@@ -1,5 +1,6 @@
 'use client';
 
+import { ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { ICON_KEYS } from './icons';
 import {
@@ -173,8 +174,8 @@ function CategoryRow({ category }: { category: CategoryRow }) {
           რედაქტირება
         </button>
         <button
-          onClick={() => {
-            if (confirm(`წავშალო "${category.name}"?`)) {
+          onClick={async () => {
+            if (await ask(`წავშალო "${category.name}"?`)) {
               startTransition(async () => {
                 await deleteCategory(category.id);
               });

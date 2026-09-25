@@ -1,5 +1,6 @@
 'use client';
 
+import { askText } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
 import { cancelJob } from './actions';
@@ -44,8 +45,8 @@ function JobCard({ job }: { job: JobRow }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const cancel = () => {
-    const reason = window.prompt('გაუქმების მიზეზი (ეცნობება მონაწილეებს, არასავალდებულო):');
+  const cancel = async () => {
+    const reason = await askText('გაუქმების მიზეზი (ეცნობება მონაწილეებს, არასავალდებულო):');
     if (reason === null) return;
     setError(null);
     startTransition(async () => {
