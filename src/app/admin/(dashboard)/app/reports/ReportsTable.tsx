@@ -2,14 +2,16 @@
 
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
-import { updateReportStatus } from './actions';
+import { updateReportStatus, setUserSuspended } from './actions';
 import { REASON_LABEL, STATUS_LABEL, STATUSES } from './labels';
 
 export type ReportRow = {
   id: string;
-  jobId: string;
+  jobId: string | null; // chat_reports-ს job არ აქვს
   reporterName: string;
+  reportedUserId: string | null;
   reportedName: string;
+  reportedSuspended: boolean;
   reason: string;
   details: string | null;
   status: string;
@@ -23,7 +25,7 @@ const STATUS_COLOR: Record<string, string> = {
   dismissed: 'bg-slate-200 text-slate-600',
 };
 
-export function ReportsTable({ reports }: { reports: ReportRow[] }) {
+export function ReportsTable({ reports, kind = 'job' }: { reports: ReportRow[]; kind?: 'job' | 'chat' }) {
   if (reports.length === 0) {
     return (
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-400">
@@ -35,16 +37,35 @@ export function ReportsTable({ reports }: { reports: ReportRow[] }) {
   return (
     <div className="mt-6 space-y-3">
       {reports.map((r) => (
-        <ReportCard key={r.id} report={r} />
+        <ReportCard key={r.id} report={r} kind={kind} />
       ))}
     </div>
   );
 }
 
-function ReportCard({ report }: { report: ReportRow }) {
+function ReportCard({ report, kind }: { report: ReportRow; kind: 'job' | 'chat' }) {
   const [status, setStatus] = useState(report.status);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [suspended, setSuspended] = useState(report.reportedSuspended);
+  const [suspendError, setSuspendError] = useState<string | null>(null);
+  const [suspendPending, startSuspendTransition] = useTransition();
+
+  const toggleSuspend = () => {
+    if (!report.reportedUserId) return;
+    const next = !suspended;
+    const reason = next ? window.prompt('შეჩერების მიზეზი (არასავალდებულო):') ?? undefined : undefined;
+    if (next && reason === undefined) return; // user cancelled the prompt
+    setSuspendError(null);
+    startSuspendTransition(async () => {
+      const res = await setUserSuspended(report.reportedUserId!, next, reason);
+      if (res.error) {
+        setSuspendError(res.error);
+      } else {
+        setSuspended(next);
+      }
+    });
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -54,10 +75,12 @@ function ReportCard({ report }: { report: ReportRow }) {
           <p className="mt-1 text-sm text-slate-600">
             <span className="font-medium">{report.reporterName}</span> იჩივლა{' '}
             <span className="font-medium">{report.reportedName}</span>-ზე
+            {suspended && <span className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">შეჩერებული</span>}
           </p>
           {report.details && <p className="mt-2 text-sm text-slate-500">{report.details}</p>}
           <p className="mt-2 text-xs text-slate-400">
-            {formatDateTime(report.createdAt)} · job: {report.jobId}
+            {formatDateTime(report.createdAt)}
+            {report.jobId ? ` · job: ${report.jobId}` : ''}
           </p>
         </div>
         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_COLOR[status] ?? ''}`}>
@@ -65,7 +88,7 @@ function ReportCard({ report }: { report: ReportRow }) {
         </span>
       </div>
 
-      <div className="mt-4 flex items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         <select
           value={status}
           disabled={pending}
@@ -75,7 +98,7 @@ function ReportCard({ report }: { report: ReportRow }) {
             setStatus(next);
             setError(null);
             startTransition(async () => {
-              const res = await updateReportStatus(report.id, next);
+              const res = await updateReportStatus(report.id, next, kind);
               if (res.error) {
                 setError(res.error);
                 setStatus(prev);
@@ -91,6 +114,22 @@ function ReportCard({ report }: { report: ReportRow }) {
           ))}
         </select>
         {error && <span className="text-sm text-red-600">{error}</span>}
+
+        {report.reportedUserId && (
+          <button
+            type="button"
+            disabled={suspendPending}
+            onClick={toggleSuspend}
+            className={`rounded-lg border px-3 py-1.5 text-sm font-medium disabled:opacity-50 ${
+              suspended
+                ? 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                : 'border-red-300 text-red-700 hover:bg-red-50'
+            }`}
+          >
+            {suspended ? 'ანგარიშის აღდგენა' : 'ანგარიშის შეჩერება'}
+          </button>
+        )}
+        {suspendError && <span className="text-sm text-red-600">{suspendError}</span>}
       </div>
     </div>
   );

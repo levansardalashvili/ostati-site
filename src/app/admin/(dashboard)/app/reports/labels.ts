@@ -6,6 +6,11 @@ export const REASON_LABEL: Record<string, string> = {
   work_not_completed: 'სამუშაო არ დასრულებულა',
   inappropriate_behavior: 'შეუფერებელი ქცევა',
   incorrect_information: 'არასწორი ინფორმაცია',
+  // chat_reports (0095)
+  spam: 'სპამი',
+  harassment: 'შეურაცხყოფა/შევიწროება',
+  inappropriate_content: 'შეუფერებელი შინაარსი',
+  scam: 'თაღლითობა',
   other: 'სხვა',
 };
 

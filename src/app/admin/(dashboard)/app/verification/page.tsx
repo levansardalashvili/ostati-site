@@ -13,11 +13,25 @@ export default async function VerificationPage() {
   const { data: requests } = providerIds.length
     ? await supabase
         .from('provider_verification_requests')
-        .select('provider_id, requested_at')
+        .select('provider_id, requested_at, selfie_path')
         .in('provider_id', providerIds)
     : { data: [] };
 
   const requestedAtByProvider = Object.fromEntries((requests ?? []).map((r) => [r.provider_id, r.requested_at]));
+  const selfiePathByProvider = Object.fromEntries((requests ?? []).map((r) => [r.provider_id, r.selfie_path]));
+
+  // 0107 — მოთხოვნასთან ერთად ატვირთული სელფი private-media bucket-შია,
+  // ადმინი კი ვერიფიკაციისთვის საკუთარი (service_role-ის გარეშე) სესიით
+  // ადარებს — signed URL-ი აქვე, სერვერზე, გამოიმუშავება (is_admin() RLS
+  // უკვე უშვებს ამ ბაკეტის SELECT-ს, supabase/migrations/0107).
+  const selfiePaths = Object.values(selfiePathByProvider).filter((v): v is string => !!v);
+  const selfieUrlByPath: Record<string, string> = {};
+  await Promise.all(
+    selfiePaths.map(async (path) => {
+      const { data } = await supabase.storage.from('private-media').createSignedUrl(path, 60 * 15);
+      if (data?.signedUrl) selfieUrlByPath[path] = data.signedUrl;
+    }),
+  );
 
   const rows: PendingProvider[] = (providers ?? [])
     .map((p) => ({
@@ -27,6 +41,7 @@ export default async function VerificationPage() {
       areas: (p.areas ?? []).join(', '),
       about: p.about,
       photoUrl: p.photo_url,
+      selfieUrl: selfiePathByProvider[p.id] ? (selfieUrlByPath[selfiePathByProvider[p.id]] ?? null) : null,
       requestedAt: requestedAtByProvider[p.id] ?? null,
     }))
     .sort((a, b) => (a.requestedAt ?? '').localeCompare(b.requestedAt ?? ''));

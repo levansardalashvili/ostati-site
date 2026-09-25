@@ -11,6 +11,7 @@ export type PendingProvider = {
   areas: string;
   about: string;
   photoUrl: string | null;
+  selfieUrl: string | null;
   requestedAt: string | null;
 };
 
@@ -69,6 +70,31 @@ function ProviderCard({ provider }: { provider: PendingProvider }) {
             <p className="mt-2 text-xs text-slate-400">
               მოთხოვნილია: {formatDateTime(provider.requestedAt)}
             </p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-4 flex gap-4">
+        <div>
+          <p className="mb-1 text-xs font-medium text-slate-400">პროფილის ფოტო</p>
+          {provider.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={provider.photoUrl} alt="" className="h-28 w-28 rounded-lg object-cover" />
+          ) : (
+            <div className="flex h-28 w-28 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400">
+              არ არის
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="mb-1 text-xs font-medium text-slate-400">ვერიფიკაციის სელფი</p>
+          {provider.selfieUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={provider.selfieUrl} alt="" className="h-28 w-28 rounded-lg object-cover" />
+          ) : (
+            <div className="flex h-28 w-28 items-center justify-center rounded-lg bg-red-50 text-xs text-red-600">
+              სელფი არ არის
+            </div>
           )}
         </div>
       </div>

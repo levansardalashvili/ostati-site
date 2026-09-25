@@ -4,6 +4,7 @@ const CARDS = [
   { href: '/admin/app/categories', label: 'კატეგორიები', desc: 'სერვისის კატეგორიების დამატება/რედაქტირება' },
   { href: '/admin/app/verification', label: 'ვერიფიკაციები', desc: 'ოსტატების ვერიფიკაციის მოთხოვნების განხილვა' },
   { href: '/admin/app/reports', label: 'რეპორტები', desc: 'Job-ებზე შემოსული საჩივრების მოდერაცია' },
+  { href: '/admin/app/reviews', label: 'შეფასებები', desc: 'შეფასებების მოდერაცია (დამალვა)' },
   { href: '/admin/app/disputes', label: 'დავები', desc: 'შეჩერებული, დასაშლელი დავის მქონე სამუშაოები' },
 ];
 
