@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Sans_Georgian } from "next/font/google";
 import "../globals.css";
 
 // A separate root layout (Next.js "multiple root layouts" pattern) — the
@@ -8,14 +8,10 @@ import "../globals.css";
 // Both layouts independently define <html>/<body>; Next.js picks whichever
 // one applies based on the matched route.
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const georgian = Noto_Sans_Georgian({
+  variable: "--font-georgian",
+  subsets: ["georgian", "latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ka" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="ka" className={`${georgian.variable} h-full antialiased`}>
       <body className="min-h-full">{children}</body>
     </html>
   );

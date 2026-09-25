@@ -1,31 +1,40 @@
 import Link from 'next/link';
-import { Smartphone, Wrench } from 'lucide-react';
+import { Mail, Smartphone, Wrench } from 'lucide-react';
+import { MobileMenu } from './MobileMenu';
 
-const NAV = [
+type NavItem = { href: string; label: string };
+type NavPage = { slug: string; title: string; nav_label?: string; show_in_header: boolean; show_in_footer: boolean };
+
+// კოდის მარშრუტები (სერვისები — ბაზის კატეგორიებიდან, როგორ მუშაობს — სისტემური გვერდი); დანარჩენი მენიუ ადმინიდან იმართება
+const FIXED_NAV: NavItem[] = [
   { href: '/services', label: 'სერვისები' },
   { href: '/how-it-works', label: 'როგორ მუშაობს' },
-  { href: '/privacy', label: 'კონფიდენციალურობა' },
-  { href: '/terms', label: 'წესები' },
 ];
 
-export function Logo({ className = '' }: { className?: string }) {
+const toItem = (p: NavPage): NavItem => ({ href: `/${p.slug}`, label: p.nav_label || p.title });
+const headerNav = (pages: NavPage[]) => [...FIXED_NAV, ...pages.filter((p) => p.show_in_header).map(toItem)];
+const footerNav = (pages: NavPage[]) => [...FIXED_NAV, ...pages.filter((p) => p.show_in_footer).map(toItem)];
+
+export function Logo({ className = '', light = false, name = 'Ostati' }: { className?: string; light?: boolean; name?: string }) {
   return (
-    <Link href="/" className={`flex items-center gap-2 ${className}`}>
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-        <Wrench size={17} strokeWidth={2.3} />
+    <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm shadow-blue-600/30">
+        <Wrench size={18} strokeWidth={2.3} />
       </span>
-      <span className="text-lg font-bold text-slate-900">Ostati</span>
+      <span className={`text-xl font-bold tracking-tight ${light ? 'text-white' : 'text-slate-900'}`}>{name}</span>
     </Link>
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ pages = [], siteName, ctaLabel = 'გადმოწერე' }: { pages?: NavPage[]; siteName?: string; ctaLabel?: string }) {
+  const items = headerNav(pages);
+  const mobileItems = [...new Map([...items, ...footerNav(pages)].map((i) => [i.href, i])).values()];
   return (
-    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-        <Logo />
-        <nav className="hidden gap-6 sm:flex">
-          {NAV.map((item) => (
+    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
+        <Logo name={siteName} />
+        <nav className="hidden items-center gap-6 whitespace-nowrap lg:flex">
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -34,13 +43,14 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/#download"
+            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+          >
+            {ctaLabel}
+          </Link>
         </nav>
-        <Link
-          href="/how-it-works"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:hidden"
-        >
-          როგორ მუშაობს
-        </Link>
+        <MobileMenu items={mobileItems} />
       </div>
     </header>
   );
@@ -48,15 +58,15 @@ export function SiteHeader() {
 
 // href-ის გარეშე (store ბმული ჯერ არ არსებობს) ბეჯი მაინც ჩანს, უბრალოდ
 // "მალე"-ს სტატუსით — არა უხილავი placeholder-ის ნაცვლად, დიზაინი
-// შესაფასებელი დარჩეს რეალური ბმულის დამატებამდეც.
-export function StoreBadge({ href, kind }: { href?: string; kind: 'play' | 'apple' }) {
-  const label = kind === 'play' ? 'Google Play-ზე' : 'App Store-ზე';
+// შესაფასებელი დარჩეს რეალური ბმულის დამატებამდეც. onDark — მუქ ფონზე.
+export function StoreBadge({ href, kind, onDark = false }: { href?: string; kind: 'play' | 'apple'; onDark?: boolean }) {
+  const label = kind === 'play' ? 'Google Play' : 'App Store';
 
   const content = (
     <>
-      <Smartphone size={20} />
+      <Smartphone size={22} />
       <span className="text-left leading-tight">
-        <span className="block text-[10px] text-slate-300">{href ? 'გადმოწერე' : 'მალე'}</span>
+        <span className="block text-[10px] uppercase tracking-wide opacity-70">{href ? 'გადმოწერე' : 'მალე'}</span>
         <span className="block text-sm font-semibold">{label}</span>
       </span>
     </>
@@ -64,7 +74,11 @@ export function StoreBadge({ href, kind }: { href?: string; kind: 'play' | 'appl
 
   if (!href) {
     return (
-      <span className="flex cursor-default items-center gap-2.5 rounded-xl border border-dashed border-slate-300 px-4 py-2.5 text-slate-400">
+      <span
+        className={`flex cursor-default items-center gap-3 rounded-xl border border-dashed px-5 py-3 ${
+          onDark ? 'border-white/30 text-white/60' : 'border-slate-300 bg-white/60 text-slate-400'
+        }`}
+      >
         {content}
       </span>
     );
@@ -73,7 +87,9 @@ export function StoreBadge({ href, kind }: { href?: string; kind: 'play' | 'appl
   return (
     <a
       href={href}
-      className="flex items-center gap-2.5 rounded-xl bg-slate-900 px-4 py-2.5 text-white transition hover:bg-slate-800"
+      className={`flex items-center gap-3 rounded-xl px-5 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+        onDark ? 'bg-white text-slate-900' : 'bg-slate-900 text-white'
+      }`}
     >
       {content}
     </a>
@@ -84,56 +100,58 @@ export function SiteFooter({
   playStoreUrl,
   appStoreUrl,
   contactEmail,
+  tagline,
+  pages = [],
+  siteName = 'Ostati',
+  copyright = 'ყველა უფლება დაცულია.',
 }: {
   playStoreUrl?: string;
   appStoreUrl?: string;
   contactEmail?: string;
+  tagline?: string;
+  pages?: NavPage[];
+  siteName?: string;
+  copyright?: string;
 }) {
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <div className="flex flex-col justify-between gap-8 sm:flex-row">
+    <footer className="bg-slate-900 text-slate-300">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Logo />
-            <p className="mt-3 max-w-xs text-sm text-slate-500">
-              Ostati აკავშირებს მომხმარებლებს სანდო, ადგილობრივ ოსტატებთან — სანტექნიკოსი,
-              ელექტრიკოსი და სხვა.
-            </p>
+            <Logo light name={siteName} />
+            {tagline && <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">{tagline}</p>}
+            {contactEmail && (
+              <a
+                href={`mailto:${contactEmail}`}
+                className="mt-5 inline-flex items-center gap-2 text-sm text-slate-300 transition hover:text-white"
+              >
+                <Mail size={15} /> {contactEmail}
+              </a>
+            )}
           </div>
 
-          <div className="flex flex-wrap gap-8">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">გვერდები</p>
-              <div className="mt-3 flex flex-col gap-2">
-                {NAV.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-sm text-slate-600 transition hover:text-blue-600"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">გვერდები</p>
+            <div className="mt-4 grid grid-cols-1 gap-2.5">
+              {footerNav(pages).map((item) => (
+                <Link key={item.href} href={item.href} className="text-sm text-slate-300 transition hover:text-white">
+                  {item.label}
+                </Link>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">გადმოწერე</p>
-              <div className="mt-3 flex flex-col gap-2">
-                <StoreBadge href={playStoreUrl} kind="play" />
-                <StoreBadge href={appStoreUrl} kind="apple" />
-              </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">გადმოწერე</p>
+            <div className="mt-4 flex flex-col items-start gap-3">
+              <StoreBadge href={playStoreUrl} kind="play" onDark />
+              <StoreBadge href={appStoreUrl} kind="apple" onDark />
             </div>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-6 text-xs text-slate-400">
-          <span>© {new Date().getFullYear()} Ostati</span>
-          {contactEmail && (
-            <a href={`mailto:${contactEmail}`} className="hover:text-slate-600">
-              {contactEmail}
-            </a>
-          )}
+        <div className="mt-12 border-t border-slate-800 pt-6 text-xs text-slate-500">
+          © {new Date().getFullYear()} {siteName}. {copyright}
         </div>
       </div>
     </footer>

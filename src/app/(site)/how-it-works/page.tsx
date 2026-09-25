@@ -4,6 +4,7 @@ import { getBlockIcon } from '@/lib/blockIcons';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import { StoreBadge } from '@/components/SiteChrome';
 import { getBlocks, getPage, getSettings } from '@/lib/supabase';
+import { text } from '@/lib/siteTexts';
 
 export const revalidate = 60;
 
@@ -25,7 +26,7 @@ export default async function HowItWorksPage() {
     <div>
       <section className="border-b border-slate-100 bg-gradient-to-b from-blue-50 to-white">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{page.title}</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{page.title}</h1>
           {page.content && (
             <div className="mx-auto mt-5 max-w-xl text-slate-600">
               <MarkdownContent content={page.content} />
@@ -39,7 +40,7 @@ export default async function HowItWorksPage() {
           {steps.map((s, i) => {
             const Icon = getBlockIcon(s.icon_key);
             return (
-              <div key={s.id} className="flex items-center gap-5 rounded-2xl border border-slate-200 bg-white p-6">
+              <div key={s.id} className="flex items-center gap-5 rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/60">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-600 text-base font-bold text-white">
                   {i + 1}
                 </span>
@@ -57,7 +58,7 @@ export default async function HowItWorksPage() {
       </section>
 
       <section className="border-t border-slate-100 bg-slate-50 py-16 text-center">
-        <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">მზად ხარ დაიწყო?</h2>
+        <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">{text(settings, 'hiw_cta_title')}</h2>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <StoreBadge href={settings.play_store_url} kind="play" />
           <StoreBadge href={settings.app_store_url} kind="apple" />

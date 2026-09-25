@@ -1,24 +1,25 @@
 import type { Metadata } from 'next';
-import { getCategories } from '@/lib/supabase';
+import { getCategories, getSettings } from '@/lib/supabase';
+import { text } from '@/lib/siteTexts';
 import { getCategoryIcon } from '@/lib/categoryIcons';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: 'სერვისები',
-  openGraph: { title: 'სერვისები', type: 'website' },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const title = text(await getSettings(), 'services_title');
+  return { title, openGraph: { title, type: 'website' } };
+}
 
 export default async function ServicesPage() {
-  const categories = await getCategories();
+  const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
 
   return (
     <div>
-      <div className="border-b border-slate-100 bg-slate-50">
-        <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6">
-          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">სერვისები</h1>
-          <p className="mx-auto mt-3 max-w-lg text-slate-600">
-            Ostati-ზე იპოვი ოსტატს ნებისმიერი სახლის სამუშაოსთვის — {categories.length} კატეგორია.
+      <div className="border-b border-slate-100 bg-gradient-to-b from-blue-50 to-white">
+        <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{text(settings, 'services_title')}</h1>
+          <p className="mx-auto mt-4 max-w-lg text-lg text-slate-600">
+            {text(settings, 'services_intro').replaceAll('{{categories}}', String(categories.length))}
           </p>
         </div>
       </div>
@@ -30,9 +31,9 @@ export default async function ServicesPage() {
             return (
               <div
                 key={c.id}
-                className="flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-6 text-center transition hover:border-blue-300 hover:shadow"
+                className="group flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-6 text-center transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/60"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
                   <Icon size={22} />
                 </span>
                 <span className="text-sm font-medium text-slate-900">{c.name}</span>

@@ -35,7 +35,8 @@ export function VerificationQueue({ providers }: { providers: PendingProvider[] 
 
 function ProviderCard({ provider }: { provider: PendingProvider }) {
   const [rejecting, setRejecting] = useState(false);
-  const [reason, setReason] = useState('');
+  const noSelfie = !provider.selfieUrl;
+  const [reason, setReason] = useState(noSelfie ? 'გთხოვთ, ხელახლა გააგზავნოთ ვერიფიკაციის მოთხოვნა სელფით.' : '');
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<'verified' | 'rejected' | null>(null);
   const [pending, startTransition] = useTransition();
@@ -135,7 +136,8 @@ function ProviderCard({ provider }: { provider: PendingProvider }) {
       ) : (
         <div className="mt-4 flex gap-2">
           <button
-            disabled={pending}
+            disabled={pending || noSelfie}
+            title={noSelfie ? 'სელფის გარეშე დადასტურება შეუძლებელია' : undefined}
             onClick={() => {
               setError(null);
               startTransition(async () => {
@@ -144,7 +146,7 @@ function ProviderCard({ provider }: { provider: PendingProvider }) {
                 else setDone('verified');
               });
             }}
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             დადასტურება
           </button>
@@ -155,6 +157,7 @@ function ProviderCard({ provider }: { provider: PendingProvider }) {
           >
             უარყოფა
           </button>
+          {noSelfie && <p className="self-center text-xs text-slate-500">სელფი არ არის — დადასტურება შეუძლებელია, უარყავით და ოსტატი ხელახლა გააგზავნის.</p>}
           {error && <p className="self-center text-sm text-red-600">{error}</p>}
         </div>
       )}

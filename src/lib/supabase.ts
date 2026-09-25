@@ -15,11 +15,31 @@ export type SitePage = {
   slug: string;
   title: string;
   content: string;
+  kind: 'system' | 'page';
+  meta_description: string;
 };
 
 export async function getPage(slug: string): Promise<SitePage | null> {
-  const { data } = await supabase().from('site_pages').select('slug, title, content').eq('slug', slug).single();
+  const { data } = await supabase()
+    .from('site_pages')
+    .select('slug, title, content, kind, meta_description')
+    .eq('slug', slug)
+    .single();
   return data;
+}
+
+export type NavPage = { slug: string; title: string; nav_label: string; show_in_header: boolean; show_in_footer: boolean };
+
+// გამოქვეყნებული თავისუფალი გვერდები — ჰედერის/ფუტერის მენიუსა და sitemap-ისთვის (RLS დრაფტს anon-ს არ აძლევს)
+export async function getNavPages(): Promise<NavPage[]> {
+  const { data } = await supabase()
+    .from('site_pages')
+    .select('slug, title, nav_label, show_in_header, show_in_footer')
+    .eq('kind', 'page')
+    .eq('is_published', true)
+    .order('sort_order', { ascending: true })
+    .order('title', { ascending: true });
+  return data ?? [];
 }
 
 export async function getSettings(): Promise<Record<string, string>> {

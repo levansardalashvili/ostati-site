@@ -17,6 +17,7 @@ export type CategoryRow = {
   sort_order: number;
   is_active: boolean;
   featured: boolean;
+  price_per_sqm: boolean;
 };
 
 export function CategoriesTable({ categories }: { categories: CategoryRow[] }) {
@@ -31,6 +32,7 @@ export function CategoriesTable({ categories }: { categories: CategoryRow[] }) {
               <th className="px-4 py-3 font-medium">აიქონი</th>
               <th className="px-4 py-3 font-medium">აქტიური</th>
               <th className="px-4 py-3 font-medium">გამორჩეული</th>
+              <th className="px-4 py-3 font-medium" title="ოსტატის პროფილში ჩანს ფასის ველი კვ.მ-ზე">ფასი კვ.მ-ზე</th>
               <th className="px-4 py-3 font-medium" />
             </tr>
           </thead>
@@ -40,7 +42,7 @@ export function CategoriesTable({ categories }: { categories: CategoryRow[] }) {
             ))}
             {categories.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
                   კატეგორია არ მოიძებნა
                 </td>
               </tr>
@@ -62,7 +64,7 @@ function CategoryRow({ category }: { category: CategoryRow }) {
   if (editing) {
     return (
       <tr className="bg-blue-50/40">
-        <td colSpan={6} className="px-4 py-3">
+        <td colSpan={7} className="px-4 py-3">
           <form
             action={(formData) => {
               setError(null);
@@ -155,6 +157,12 @@ function CategoryRow({ category }: { category: CategoryRow }) {
         <ToggleSwitch
           checked={category.featured}
           onChange={(v) => toggleCategoryField(category.id, 'featured', v)}
+        />
+      </td>
+      <td className="px-4 py-3">
+        <ToggleSwitch
+          checked={category.price_per_sqm}
+          onChange={(v) => toggleCategoryField(category.id, 'price_per_sqm', v)}
         />
       </td>
       <td className="px-4 py-3 text-right">

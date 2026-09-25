@@ -28,7 +28,10 @@ export default async function VerificationPage() {
   const selfieUrlByPath: Record<string, string> = {};
   await Promise.all(
     selfiePaths.map(async (path) => {
-      const { data } = await supabase.storage.from('private-media').createSignedUrl(path, 60 * 15);
+      // DB-ში ინახება აპის `private-media://` მარკერით — Storage-ს მხოლოდ path სჭირდება
+      const { data } = await supabase.storage
+        .from('private-media')
+        .createSignedUrl(path.replace(/^private-media:\/\//, ''), 60 * 15);
       if (data?.signedUrl) selfieUrlByPath[path] = data.signedUrl;
     }),
   );

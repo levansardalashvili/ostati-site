@@ -72,7 +72,7 @@ export async function updateCategory(id: string, formData: FormData): Promise<Ac
 
 export async function toggleCategoryField(
   id: string,
-  field: 'is_active' | 'featured',
+  field: 'is_active' | 'featured' | 'price_per_sqm',
   value: boolean,
 ): Promise<ActionResult> {
   const supabase = await createClient();

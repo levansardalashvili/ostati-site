@@ -1,43 +1,46 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Sans_Georgian } from "next/font/google";
 import "../globals.css";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
-import { getSettings } from "@/lib/supabase";
+import { getNavPages, getSettings } from "@/lib/supabase";
+import { text } from "@/lib/siteTexts";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// ქართული ასოებით სრულყოფილი შრიფტი (Geist-ს ქართული არ აქვს — ბრაუზერი შემთხვევით fallback-ს იღებდა)
+const georgian = Noto_Sans_Georgian({
+  variable: "--font-georgian",
+  subsets: ["georgian", "latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  metadataBase: new URL("https://ostati.ge"),
-  title: {
-    default: "Ostati — იპოვე სანდო ოსტატი",
-    template: "%s | Ostati",
-  },
-  description: "Ostati აკავშირებს მომხმარებლებს ადგილობრივ ოსტატებთან.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const name = text(settings, "site_name");
+  return {
+    metadataBase: new URL("https://ostati.ge"),
+    title: { default: name, template: `%s | ${name}` },
+    description: text(settings, "site_description"),
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSettings();
+  const [settings, pages] = await Promise.all([getSettings(), getNavPages()]);
 
   return (
     <html
       lang="ka"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${georgian.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="flex min-h-full flex-col bg-slate-50">
-        <SiteHeader />
+      <body className="flex min-h-full flex-col bg-white">
+        <SiteHeader pages={pages} siteName={text(settings, "site_name")} ctaLabel={text(settings, "header_cta")} />
         <main className="flex-1">{children}</main>
         <SiteFooter
           playStoreUrl={settings.play_store_url}
           appStoreUrl={settings.app_store_url}
           contactEmail={settings.contact_email}
+          tagline={text(settings, "footer_tagline")}
+          siteName={text(settings, "site_name")}
+          copyright={text(settings, "copyright_text")}
+          pages={pages}
         />
       </body>
     </html>

@@ -1,59 +1,83 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase-admin/server';
+import { SITE_TEXT_KEYS } from '@/lib/siteTexts';
 
 export type ActionResult = { error?: string };
 
-// site_pages.slug -> the public route that renders it (see src/app/*/page.tsx).
-// 'home' is the one exception (public path is '/', not '/home').
-const PUBLIC_PATH: Record<string, string> = {
-  home: '/',
-  'how-it-works': '/how-it-works',
-  privacy: '/privacy',
-  terms: '/terms',
-};
+const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-export async function updatePage(slug: string, formData: FormData): Promise<ActionResult> {
-  const title = String(formData.get('title') ?? '').trim();
-  const content = String(formData.get('content') ?? '');
+// საჯარო საიტი იმავე Next აპშია — ადმინიდან შენახვისას მთელი (site) ხე მყისიერად განახლდება (60-წამიანი ქეშის ლოდინის გარეშე)
+function revalidateSite() {
+  revalidatePath('/', 'layout');
+  revalidatePath('/admin/site/content');
+}
 
-  if (!title) {
-    return { error: 'სათაური სავალდებულოა' };
-  }
+function readFields(formData: FormData) {
+  return {
+    title: String(formData.get('title') ?? '').trim(),
+    content: String(formData.get('content') ?? ''),
+    meta_description: String(formData.get('meta_description') ?? '').trim().slice(0, 200),
+    nav_label: String(formData.get('nav_label') ?? '').trim().slice(0, 30),
+    is_published: formData.get('is_published') === 'on',
+    show_in_header: formData.get('show_in_header') === 'on',
+    show_in_footer: formData.get('show_in_footer') === 'on',
+    sort_order: Number.parseInt(String(formData.get('sort_order') ?? '0'), 10) || 0,
+  };
+}
+
+function friendly(message: string): string {
+  if (message.includes('site_pages_pkey') || message.includes('duplicate key')) return 'ასეთი მისამართის გვერდი უკვე არსებობს';
+  if (message.includes('site_pages_slug_check')) return 'მისამართი დაკავებულია ან არასწორია (მხოლოდ პატარა ლათინური ასოები, ციფრები და დეფისი)';
+  if (message.includes('SYSTEM_PAGE_PROTECTED')) return 'სისტემური გვერდი არ იშლება';
+  return message;
+}
+
+export async function createPage(formData: FormData): Promise<ActionResult> {
+  const slug = String(formData.get('slug') ?? '').trim();
+  const f = readFields(formData);
+  if (!SLUG_RE.test(slug) || slug.length > 60) return { error: 'მისამართი: პატარა ლათინური ასოები, ციფრები და დეფისი (მაგ. about-us)' };
+  if (!f.title) return { error: 'სათაური სავალდებულოა' };
 
   const supabase = await createClient();
-  const { error } = await supabase.from('site_pages').update({ title, content }).eq('slug', slug);
+  const { error } = await supabase.from('site_pages').insert({ slug, kind: 'page', ...f });
+  if (error) return { error: friendly(error.message) };
+  revalidateSite();
+  redirect(`/admin/site/content/${slug}`);
+}
 
-  if (error) {
-    return { error: error.message };
-  }
+export async function updatePage(slug: string, formData: FormData): Promise<ActionResult> {
+  const f = readFields(formData);
+  if (!f.title) return { error: 'სათაური სავალდებულოა' };
 
-  revalidatePath('/admin/site/content');
+  const supabase = await createClient();
+  const { data: existing } = await supabase.from('site_pages').select('kind').eq('slug', slug).single();
+  if (!existing) return { error: 'გვერდი ვერ მოიძებნა' };
+
+  // სისტემურ გვერდზე მხოლოდ სათაური და ტექსტი იცვლება (განლაგება/გამოქვეყნება კოდის შაბლონს ეკუთვნის)
+  const patch = existing.kind === 'system' ? { title: f.title, content: f.content } : f;
+  const { error } = await supabase.from('site_pages').update(patch).eq('slug', slug);
+  if (error) return { error: friendly(error.message) };
+  revalidateSite();
   revalidatePath(`/admin/site/content/${slug}`);
-  const publicPath = PUBLIC_PATH[slug];
-  if (publicPath) revalidatePath(publicPath);
   return {};
 }
 
-export async function updateSettings(formData: FormData): Promise<ActionResult> {
-  const entries = [
-    { key: 'play_store_url', value: String(formData.get('play_store_url') ?? '').trim() },
-    { key: 'app_store_url', value: String(formData.get('app_store_url') ?? '').trim() },
-    { key: 'contact_email', value: String(formData.get('contact_email') ?? '').trim() },
-  ];
-
+export async function deletePage(slug: string): Promise<ActionResult> {
   const supabase = await createClient();
-  for (const entry of entries) {
-    const { error } = await supabase.from('site_settings').update({ value: entry.value }).eq('key', entry.key);
-    if (error) {
-      return { error: error.message };
-    }
-  }
+  const { error } = await supabase.from('site_pages').delete().eq('slug', slug).eq('kind', 'page');
+  if (error) return { error: friendly(error.message) };
+  revalidateSite();
+  redirect('/admin/site/content');
+}
 
-  revalidatePath('/admin/site/content');
-  // Settings (store links, contact email) render in the shared root
-  // layout's footer, so every public page needs revalidating.
-  for (const path of Object.values(PUBLIC_PATH)) revalidatePath(path);
+export async function updateSettings(formData: FormData): Promise<ActionResult> {
+  const rows = SITE_TEXT_KEYS.map((key) => ({ key, value: String(formData.get(key) ?? '').trim() }));
+  const supabase = await createClient();
+  const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' });
+  if (error) return { error: error.message };
+  revalidateSite();
   return {};
 }

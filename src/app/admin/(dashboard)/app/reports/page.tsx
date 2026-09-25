@@ -45,6 +45,7 @@ export default async function ReportsPage() {
       id: r.id,
       jobId: r.job_id ?? null,
       reporterName: nameById[r.reporter_id] ?? r.reporter_id,
+      reporterId: r.reporter_id,
       reportedUserId: r.reported_user_id,
       reportedName: r.reported_user_id ? (nameById[r.reported_user_id] ?? r.reported_user_id) : '—',
       reportedSuspended: r.reported_user_id ? (suspendedById[r.reported_user_id] ?? false) : false,

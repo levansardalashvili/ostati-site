@@ -38,3 +38,16 @@ export async function setUserSuspended(userId: string, suspended: boolean, reaso
   revalidatePath('/admin/app/reports');
   return {};
 }
+
+export type ConversationMessage = { id: string; senderId: string; type: string; body: string | null; amount: number | null; createdAt: string };
+
+export async function getReportConversation(reportId: string): Promise<{ error?: string; messages?: ConversationMessage[] }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("admin_report_conversation", { p_report_id: reportId });
+  if (error) return { error: error.message };
+  return {
+    messages: (data ?? []).map((m: { id: string; sender_id: string; type: string; body: string | null; amount: number | null; created_at: string }) => ({
+      id: m.id, senderId: m.sender_id, type: m.type, body: m.body, amount: m.amount, createdAt: m.created_at,
+    })),
+  };
+}

@@ -2,12 +2,13 @@
 
 import { useState, useTransition } from 'react';
 import { formatDateTime } from '@/lib/format';
-import { updateReportStatus, setUserSuspended } from './actions';
+import { updateReportStatus, setUserSuspended, getReportConversation, type ConversationMessage } from './actions';
 import { REASON_LABEL, STATUS_LABEL, STATUSES } from './labels';
 
 export type ReportRow = {
   id: string;
   jobId: string | null; // chat_reports-ს job არ აქვს
+  reporterId: string;
   reporterName: string;
   reportedUserId: string | null;
   reportedName: string;
@@ -50,6 +51,19 @@ function ReportCard({ report, kind }: { report: ReportRow; kind: 'job' | 'chat' 
   const [suspended, setSuspended] = useState(report.reportedSuspended);
   const [suspendError, setSuspendError] = useState<string | null>(null);
   const [suspendPending, startSuspendTransition] = useTransition();
+  const [convo, setConvo] = useState<ConversationMessage[] | null>(null);
+  const [convoError, setConvoError] = useState<string | null>(null);
+  const [convoPending, startConvoTransition] = useTransition();
+
+  const toggleConvo = () => {
+    if (convo) return setConvo(null);
+    setConvoError(null);
+    startConvoTransition(async () => {
+      const res = await getReportConversation(report.id);
+      if (res.error) setConvoError(res.error);
+      else setConvo(res.messages ?? []);
+    });
+  };
 
   const toggleSuspend = () => {
     if (!report.reportedUserId) return;
@@ -130,7 +144,31 @@ function ReportCard({ report, kind }: { report: ReportRow; kind: 'job' | 'chat' 
           </button>
         )}
         {suspendError && <span className="text-sm text-red-600">{suspendError}</span>}
+        {kind === 'chat' && (
+          <button
+            type="button"
+            disabled={convoPending}
+            onClick={toggleConvo}
+            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          >
+            {convo ? 'საუბრის დამალვა' : 'საუბრის ნახვა'}
+          </button>
+        )}
+        {convoError && <span className="text-sm text-red-600">{convoError}</span>}
       </div>
+
+      {convo && (
+        <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto rounded-xl bg-slate-50 p-3 text-sm">
+          {convo.length === 0 && <p className="text-slate-400">შეტყობინებები არ მოიძებნა</p>}
+          {convo.map((m) => (
+            <p key={m.id} className={m.senderId === report.reporterId ? 'text-slate-700' : 'text-red-700'}>
+              <span className="mr-2 text-xs font-semibold">{m.senderId === report.reporterId ? 'მომჩივანი' : 'დაბრალებული'}</span>
+              {m.type === 'offer' ? `[ფასის შეთავაზება: ${m.amount} ₾]` : m.body || `[${m.type === "image" ? "ფოტო" : m.type}]`}
+              <span className="ml-2 text-xs text-slate-400">{formatDateTime(m.createdAt)}</span>
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

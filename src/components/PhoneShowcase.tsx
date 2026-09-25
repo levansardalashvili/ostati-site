@@ -2,21 +2,21 @@ import { PhoneFrame } from './PhoneFrame';
 import { ChatScreen } from './phoneScreens/ChatScreen';
 import { HomeScreen } from './phoneScreens/HomeScreen';
 
-// ორი ტელეფონის კლასტერი — მთავარი (Home ეკრანი) წინ და ცენტრში,
-// მეორე (ჩატის ეკრანი) მის უკან, პატარა, ოდნავ დახრილი, ჩრდილით —
-// სტანდარტული "device cluster" hero-პატერნი. მობილურ ვიუზე მეორე
-// ტელეფონი იმალება (ადგილი არ ჰყოფნის ორივეს ლამაზად ჩასატევად ვიწრო
-// ეკრანზე) — მთავარი ცალკე კარგად მუშაობს იქაც.
+// ორი ტელეფონის კლასტერი: მთავარი ეკრანი წინ, ჩატი უკან და ოდნავ დახრილი. ქვედა ნაწილი განზრახ მოჭრილია და
+// ფერმკრთალდება (mask) — ტელეფონები "ამოდიან" ქვემოდან, გვერდზე ცარიელი ადგილი არ რჩება.
 export function PhoneShowcase() {
   return (
-    <div className="relative mx-auto flex w-full max-w-2xl items-center justify-center px-4 py-10 sm:py-14">
-      <div className="absolute right-2 top-16 hidden rotate-6 opacity-95 sm:right-6 sm:block md:right-10">
-        <PhoneFrame className="!w-[230px] md:!w-[260px]">
+    <div
+      className="relative mx-auto h-[460px] w-full max-w-[560px] overflow-hidden sm:h-[560px]"
+      style={{ maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)' }}
+    >
+      <div className="absolute left-1/2 top-16 hidden translate-x-[5%] rotate-6 sm:block">
+        <PhoneFrame className="!w-[250px]">
           <ChatScreen />
         </PhoneFrame>
       </div>
-      <div className="relative z-10 -translate-x-6 sm:-translate-x-16 md:-translate-x-20">
-        <PhoneFrame>
+      <div className="absolute left-1/2 top-6 z-10 -translate-x-1/2 sm:-translate-x-[78%]">
+        <PhoneFrame className="!w-[240px] sm:!w-[275px]">
           <HomeScreen />
         </PhoneFrame>
       </div>
