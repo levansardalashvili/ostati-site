@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
-import { marked } from 'marked';
+import { renderMarkdown } from '@/lib/markdown';
 import { ask } from '@/lib/dialog';
 import { createArticle, deleteArticle, updateArticle } from './actions';
 
@@ -25,7 +25,7 @@ export function ArticleForm({ initial, categories }: { initial: ArticleInitial; 
   const [pending, startTransition] = useTransition();
   const [content, setContent] = useState(initial.content);
   const [preview, setPreview] = useState(false);
-  const html = useMemo(() => (preview ? (marked.parse(content, { async: false }) as string) : ''), [preview, content]);
+  const html = useMemo(() => (preview ? renderMarkdown(content) : ''), [preview, content]);
 
   const onDelete = async () => {
     if (!(await ask(`სტატიის „${initial.title}“ წაშლა? ეს შეუქცევადია.`))) return;

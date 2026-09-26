@@ -40,6 +40,7 @@ const ACTIONS: Record<string, string> = {
   help_category_update: 'დახმარება: კატეგორიის ცვლილება',
   help_category_delete: 'დახმარება: კატეგორიის წაშლა',
   support_request_update: 'მიმართვის სტატუსი',
+  user_delete: 'მომხმარებლის ანგარიშის წაშლა',
   chat_view: 'რეპორტირებული საუბრის ნახვა',
 };
 
@@ -74,6 +75,7 @@ function summarize(action: string, d: Details): string {
     case 'help_category_update':
     case 'help_category_delete': return `${d.title ?? ''}${d.published === false ? ' · დრაფტი' : ''}`;
     case 'support_request_update': return String(d.status ?? '');
+    case 'user_delete': return `${d.role === 'provider' ? 'ოსტატი' : 'მომხმარებელი'}${reason}`;
     case 'site_screenshot_insert':
     case 'site_screenshot_update':
     case 'site_screenshot_delete': return String(d.path ?? '');

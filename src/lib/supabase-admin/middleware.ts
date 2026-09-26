@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { ADMIN_COOKIE_OPTIONS } from './cookieOptions';
 
 // Runs on every request (see src/proxy.ts). Only touches `/admin/*` paths —
 // the public site (/, /how-it-works, /privacy, /terms) is never gated and
@@ -20,6 +21,7 @@ export async function updateSession(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: ADMIN_COOKIE_OPTIONS,
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -60,6 +62,29 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/admin/login';
       url.searchParams.set('error', 'not_admin');
       return NextResponse.redirect(url);
+    }
+
+    // ორფაქტორიანი დადასტურება (TOTP): პაროლი (aal1) საკმარისი არ არის.
+    //  - დადასტურებული ფაქტორი აქვს → /admin/mfa (კოდის შეყვანა)
+    //  - ფაქტორი არ აქვს → /admin/mfa/setup (ჩართვა). ეს აიძულებს ჩართვას; ბაზაც (is_admin, 0137) ფაქტორის რეგისტრაციის შემდეგ aal1-ს აღარ უშვებს.
+    //  - aal2 → ყველაფერი ღიაა (setup-იც, ახალი მოწყობილობის დასამატებლად); მხოლოდ კოდის გვერდი აღარ სჭირდება
+    const path = request.nextUrl.pathname;
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    const hasFactor = (user.factors ?? []).some((f) => f.status === 'verified');
+    let to: string | null = null;
+    if (aal?.currentLevel !== 'aal2') {
+      const need = hasFactor ? '/admin/mfa' : '/admin/mfa/setup';
+      if (path !== need) to = need;
+    } else if (path === '/admin/mfa') {
+      to = '/admin';
+    }
+    if (to) {
+      const url = request.nextUrl.clone();
+      url.pathname = to;
+      url.search = '';
+      const redirect = NextResponse.redirect(url);
+      supabaseResponse.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+      return redirect;
     }
   }
 

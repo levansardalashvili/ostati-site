@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase-admin/server';
 
 export type ActionResult = { error?: string; warning?: string };
@@ -47,4 +48,43 @@ export async function removeJobPhoto(jobId: string, ref: string, userId: string,
   const warning = await removeFile(ref);
   revalidatePath(`/admin/app/users/${userId}`);
   return warning ? { warning } : {};
+}
+
+function deleteError(message: string): string {
+  if (message.includes('ACCOUNT_HAS_ACTIVE_JOBS')) return 'ანგარიშს აქვს მიმდინარე (არჩეული, დაუსრულებელი) სამუშაო — ჯერ უნდა დასრულდეს ან გაუქმდეს';
+  if (message.includes('Admin accounts cannot be deleted')) return 'ადმინის ანგარიში არ იშლება';
+  if (message.includes('Account not found')) return 'ანგარიში ვერ მოიძებნა (შესაძლოა უკვე წაშლილია)';
+  return message;
+}
+
+// ანგარიშის სამუდამო წაშლა (მაგ. ვებიდან მოსული მოთხოვნისას). იგივე წესები, რაც მომხმარებლის საკუთარ წაშლაზე: ჯერ RPC-ით
+// ვამოწმებთ, რომ წაშლა დაშვებულია, მერე ვშლით ფაილებს (best-effort), ბოლოს — თავად ანგარიშს (გარდაუვალი, ვერ აღდგება).
+export async function deleteUserAccount(userId: string, reason: string | null): Promise<ActionResult> {
+  const supabase = await createClient();
+  const pre = await supabase.rpc('admin_precheck_delete_user', { p_user_id: userId });
+  if (pre.error) return { error: deleteError(pre.error.message) };
+
+  let warning: string | undefined;
+  // private-media (ჩატი, განცხადების/დასრულების ფოტოები, სელფი) — Edge Function service role-ით, ადმინის JWT-ით
+  const fn = await supabase.functions.invoke('delete-account-files', { body: { user_id: userId } });
+  if (fn.error) warning = 'ზოგი კერძო ფაილის წაშლა ვერ მოხერხდა';
+  // საჯარო bucket-ები — ადმინის storage policy-ებით (0116)
+  const folders: [string, string][] = [
+    ...(['profile', 'certificate', 'portfolio', 'rating'] as const).map((k): [string, string] => ['user-media', `${k}/${userId}`]),
+    ['job-photos', userId],
+  ];
+  for (const [bucket, folder] of folders) {
+    try {
+      const { data } = await supabase.storage.from(bucket).list(folder);
+      if (data?.length) await supabase.storage.from(bucket).remove(data.map((f) => `${folder}/${f.name}`));
+    } catch {
+      warning = 'ზოგი ფაილის წაშლა ვერ მოხერხდა';
+    }
+  }
+
+  const { error } = await supabase.rpc('admin_delete_user', { p_user_id: userId, p_reason: reason });
+  if (error) return { error: deleteError(error.message) };
+  void warning; // ანგარიში წაიშალა; ფაილების გაფრთხილება ჟურნალში არ იწერება (ფაილებს ვერაფერს მოუხერხებთ ანგარიშის გარეშე)
+  revalidatePath('/admin/app/users');
+  redirect('/admin/app/users');
 }

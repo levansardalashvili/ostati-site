@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { ADMIN_COOKIE_OPTIONS } from './cookieOptions';
 
 // Server-side Supabase client — anon key + the caller's own cookie-backed
 // session, so every query still goes through RLS as that specific admin
@@ -12,6 +13,7 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: ADMIN_COOKIE_OPTIONS,
       cookies: {
         getAll() {
           return cookieStore.getAll();

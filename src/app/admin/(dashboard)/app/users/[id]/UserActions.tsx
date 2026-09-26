@@ -3,6 +3,7 @@
 import { askText, ask } from '@/lib/dialog';
 import { useState, useTransition } from 'react';
 import { setUserSuspended, revokeVerification } from '../actions';
+import { deleteUserAccount } from './actions';
 
 const btn = 'rounded-lg border px-3 py-1.5 text-sm font-medium disabled:opacity-50';
 
@@ -38,6 +39,20 @@ export function UserActions({
     startTransition(async () => setMsg((await revokeVerification(userId, why.trim() || undefined)).error ?? null));
   };
 
+  const remove = async () => {
+    const ok = await ask(
+      'ანგარიშის სამუდამო წაშლა?\n\nეს შეუქცევადია: პროფილი, ფოტოები, ჩატები და სელფი იშლება; დასრულებული სამუშაოები/შეფასებები ანონიმიზდება. დარწმუნდით, რომ მოთხოვნა ვინაობით დადასტურებულია.',
+    );
+    if (!ok) return;
+    const why = await askText('წაშლის მიზეზი (ჟურნალში ჩაიწერება, არასავალდებულო):');
+    if (why === null) return;
+    setMsg(null);
+    startTransition(async () => {
+      const res = await deleteUserAccount(userId, why.trim() || null);
+      if (res?.error) setMsg(res.error);
+    });
+  };
+
   if (role === 'admin') return null;
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -54,6 +69,9 @@ export function UserActions({
           ვერიფიკაციის მოხსნა
         </button>
       )}
+      <button type="button" disabled={pending} onClick={remove} className={`${btn} border-red-700 bg-red-700 text-white hover:bg-red-800`}>
+        ანგარიშის წაშლა
+      </button>
       {msg && <span className="text-sm font-medium text-red-600">{msg}</span>}
     </div>
   );

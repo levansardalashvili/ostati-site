@@ -11,25 +11,18 @@ export const metadata: Metadata = {
   description: 'Ostati-ის დახმარების ცენტრი: პასუხები ხშირ კითხვებზე მომხმარებლებისთვის და ოსტატებისთვის, და მიმართვის ფორმა.',
 };
 
-export default async function HelpCenterPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const { q = '' } = await searchParams;
-  const query = q.trim().toLowerCase().slice(0, 80);
+export default async function HelpCenterPage() {
   const [categories, articles] = await Promise.all([getHelpCategories(), getHelpArticles()]);
-  const catTitle = Object.fromEntries(categories.map((c) => [c.id, c.title]));
-  const results = query
-    ? articles.filter((a) => `${a.title} ${a.summary} ${a.content}`.toLowerCase().includes(query))
-    : [];
 
   return (
     <div>
       <section className="border-b border-slate-100 bg-gradient-to-b from-blue-50 to-white">
         <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">როგორ დაგეხმაროთ?</h1>
-          <form action="/support" className="relative mx-auto mt-8 max-w-xl">
+          <form action="/support/search" className="relative mx-auto mt-8 max-w-xl">
             <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               name="q"
-              defaultValue={q}
               maxLength={80}
               placeholder="მოძებნეთ პასუხი, მაგ. „ვერიფიკაცია“"
               className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-28 text-base shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -42,58 +35,26 @@ export default async function HelpCenterPage({ searchParams }: { searchParams: P
       </section>
 
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        {query ? (
-          <section>
-            <h2 className="text-lg font-semibold text-slate-900">
-              შედეგები „{q.trim()}“-ზე: {results.length}
-            </h2>
-            {results.length === 0 ? (
-              <p className="mt-4 text-slate-600">
-                ვერაფერი მოიძებნა. სცადეთ სხვა სიტყვა ან{' '}
-                <Link href="/support/contact" className="font-semibold text-blue-600 hover:underline">
-                  მოგვწერეთ
-                </Link>
-                .
-              </p>
-            ) : (
-              <ul className="mt-5 space-y-3">
-                {results.map((a) => (
-                  <li key={a.id}>
-                    <Link
-                      href={`/support/${a.category_id}/${a.slug}`}
-                      className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:shadow-md hover:shadow-blue-100/60"
-                    >
-                      <span className="text-xs font-medium text-blue-600">{catTitle[a.category_id]}</span>
-                      <span className="mt-1 block font-semibold text-slate-900">{a.title}</span>
-                      {a.summary && <span className="mt-1 block text-sm text-slate-500">{a.summary}</span>}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        ) : (
-          <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {categories.map((c) => {
-              const Icon = getBlockIcon(c.icon_key);
-              const count = articles.filter((a) => a.category_id === c.id).length;
-              return (
-                <Link
-                  key={c.id}
-                  href={`/support/${c.id}`}
-                  className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/60"
-                >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
-                    <Icon size={22} />
-                  </span>
-                  <h2 className="mt-5 text-lg font-semibold text-slate-900">{c.title}</h2>
-                  {c.description && <p className="mt-2 text-sm leading-relaxed text-slate-500">{c.description}</p>}
-                  <p className="mt-4 text-xs font-medium text-slate-400">{count} სტატია</p>
-                </Link>
-              );
-            })}
-          </section>
-        )}
+        <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((c) => {
+            const Icon = getBlockIcon(c.icon_key);
+            const count = articles.filter((a) => a.category_id === c.id).length;
+            return (
+              <Link
+                key={c.id}
+                href={`/support/${c.id}`}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/60"
+              >
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
+                  <Icon size={22} />
+                </span>
+                <h2 className="mt-5 text-lg font-semibold text-slate-900">{c.title}</h2>
+                {c.description && <p className="mt-2 text-sm leading-relaxed text-slate-500">{c.description}</p>}
+                <p className="mt-4 text-xs font-medium text-slate-400">{count} სტატია</p>
+              </Link>
+            );
+          })}
+        </section>
 
         <section className="mt-14 rounded-3xl bg-slate-900 px-6 py-10 text-center sm:px-12">
           <h2 className="text-xl font-bold text-white sm:text-2xl">ვერ იპოვეთ პასუხი?</h2>

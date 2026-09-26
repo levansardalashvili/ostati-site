@@ -3,20 +3,11 @@
 import { useActionState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { submitSupportRequest, type ContactState } from './actions';
-
-export const TOPICS = [
-  { value: 'account', label: 'ანგარიში და შესვლა' },
-  { value: 'job', label: 'განცხადება ან სამუშაო' },
-  { value: 'verification', label: 'ვერიფიკაცია' },
-  { value: 'payment', label: 'ფასი და ანგარიშსწორება' },
-  { value: 'safety', label: 'უსაფრთხოება / წესების დარღვევა' },
-  { value: 'technical', label: 'ტექნიკური პრობლემა' },
-  { value: 'other', label: 'სხვა' },
-];
+import { TOPICS } from './topics';
 
 const field = 'mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-base outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100';
 
-export function ContactForm() {
+export function ContactForm({ defaultTopic = 'other', defaultMessage = '' }: { defaultTopic?: string; defaultMessage?: string }) {
   const [state, action, pending] = useActionState<ContactState, FormData>(submitSupportRequest, {});
 
   if (state.ok) {
@@ -52,7 +43,7 @@ export function ContactForm() {
 
       <label className="block text-sm font-medium text-slate-700">
         თემა
-        <select name="topic" defaultValue="other" className={field}>
+        <select name="topic" defaultValue={defaultTopic} className={field}>
           {TOPICS.map((t) => (
             <option key={t.value} value={t.value}>
               {t.label}
@@ -63,7 +54,7 @@ export function ContactForm() {
 
       <label className="block text-sm font-medium text-slate-700">
         შეტყობინება
-        <textarea name="message" required minLength={10} maxLength={2000} rows={6} placeholder="აღწერეთ საკითხი რაც შეიძლება დეტალურად" className={field} />
+        <textarea name="message" defaultValue={defaultMessage} required minLength={10} maxLength={2000} rows={6} placeholder="აღწერეთ საკითხი რაც შეიძლება დეტალურად" className={field} />
       </label>
 
       <p className="text-xs text-slate-500">

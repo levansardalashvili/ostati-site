@@ -11,7 +11,7 @@ export const revalidate = 60;
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('how-it-works');
   const title = page?.title ?? 'როგორ მუშაობს';
-  return { title, openGraph: { title, type: 'website' } };
+  return { title };
 }
 
 function Steps({ steps }: { steps: SiteBlockItem[] }) {

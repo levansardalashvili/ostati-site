@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await getPage(slug);
   if (!page || page.kind !== 'page') return {};
   const description = page.meta_description || undefined;
-  return { title: page.title, description, openGraph: { title: page.title, description, type: 'website' } };
+  return { title: page.title, description };
 }
 
 export default async function FreePage({ params }: Props) {

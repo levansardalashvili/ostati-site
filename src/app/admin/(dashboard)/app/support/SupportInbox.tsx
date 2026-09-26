@@ -22,6 +22,7 @@ const TOPIC: Record<string, string> = {
   payment: 'ფასი და ანგარიშსწორება',
   safety: 'უსაფრთხოება / წესების დარღვევა',
   technical: 'ტექნიკური პრობლემა',
+  deletion: 'ანგარიშის წაშლის მოთხოვნა',
   other: 'სხვა',
 };
 const STATUS: Record<string, { label: string; cls: string }> = {
@@ -78,6 +79,15 @@ function RequestCard({ row }: { row: SupportRow }) {
         </a>
       </p>
       <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm text-slate-800">{row.message}</p>
+      {row.topic === 'deletion' && (
+        <p className="mt-2 text-sm text-slate-600">
+          წაშლისთვის ჯერ დაადასტურეთ ვინაობა, შემდეგ:{' '}
+          <a href={`/admin/app/users?q=${encodeURIComponent(row.contact)}`} className="font-semibold text-blue-600 hover:underline">
+            იპოვეთ მომხმარებელი
+          </a>{' '}
+          → „ანგარიშის წაშლა“.
+        </p>
+      )}
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
         <label className="flex-1 text-xs font-medium text-slate-500">

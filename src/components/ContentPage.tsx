@@ -2,12 +2,13 @@ import { notFound } from 'next/navigation';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import { LegalBreadcrumb, LegalRelated } from '@/components/LegalRelated';
 import { getLegalPages, getPage, getSettings } from '@/lib/supabase';
+import { safeEmail } from '@/lib/safeUrl';
 
 export async function ContentPage({ slug }: { slug: string }) {
   const [page, settings, legalDocs] = await Promise.all([getPage(slug), getSettings(), getLegalPages()]);
   if (!page) notFound();
   // {{contact_email}} — settings-იდან; თუ ჯერ არ არის მითითებული, ტექსტი მაინც გასაგები რჩება
-  const email = settings.contact_email?.trim();
+  const email = safeEmail(settings.contact_email);
   const content = page.content.replaceAll('{{contact_email}}', email ? `[${email}](mailto:${email})` : '(საკონტაქტო ელფოსტა მალე დაემატება)');
 
   const isLegal = legalDocs.some((d) => d.slug === slug);

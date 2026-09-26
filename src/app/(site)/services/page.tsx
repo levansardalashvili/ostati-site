@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = text(await getSettings(), 'services_title');
-  return { title, openGraph: { title, type: 'website' } };
+  return { title };
 }
 
 export default async function ServicesPage() {

@@ -2,7 +2,7 @@
 
 import { ask } from '@/lib/dialog';
 import { useMemo, useState, useTransition } from 'react';
-import { marked } from 'marked';
+import { renderMarkdown } from '@/lib/markdown';
 import { createPage, deletePage, updatePage } from './actions';
 
 export type PageInitial = {
@@ -29,7 +29,7 @@ export function PageForm({ mode, initial }: { mode: 'create' | 'edit'; initial: 
   const [preview, setPreview] = useState(false);
   const isSystem = initial.kind === 'system';
 
-  const html = useMemo(() => (preview ? (marked.parse(content, { async: false }) as string) : ''), [preview, content]);
+  const html = useMemo(() => (preview ? renderMarkdown(content) : ''), [preview, content]);
 
   const onDelete = async () => {
     if (!(await ask(`გვერდის „${initial.title}“ წაშლა? ეს შეუქცევადია და მისამართი (/${initial.slug}) საიტზე აღარ იმუშავებს.`))) return;

@@ -22,7 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
     // Ostati") არ სჭირდება მასზე დამატება, თორემ "Ostati" ორჯერ გაჩნდება.
     title: { absolute: title },
     description,
-    openGraph: { title, description, type: 'website' },
   };
 }
 

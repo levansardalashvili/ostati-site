@@ -18,7 +18,7 @@ function revalidateHelp() {
 function friendly(message: string): string {
   if (message.includes('help_articles_category_id_slug_key')) return 'ამ კატეგორიაში ასეთი მისამართის სტატია უკვე არსებობს';
   if (message.includes('help_categories_pkey')) return 'ასეთი მისამართის კატეგორია უკვე არსებობს';
-  if (message.includes('help_categories_id_check')) return 'მისამართი არასწორია ან დაკავებულია (პატარა ლათინური ასოები, ციფრები, დეფისი; „contact“ აკრძალულია)';
+  if (message.includes('help_categories_id_check')) return 'მისამართი არასწორია ან დაკავებულია (პატარა ლათინური ასოები, ციფრები, დეფისი; „contact“ და „search“ აკრძალულია)';
   if (message.includes('help_articles_slug_check')) return 'მისამართი: პატარა ლათინური ასოები, ციფრები და დეფისი';
   if (message.includes('violates foreign key') && message.includes('help_articles')) return 'კატეგორიაში სტატიებია — ჯერ წაშალეთ ან გადაიტანეთ ისინი';
   return message;

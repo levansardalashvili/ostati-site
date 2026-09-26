@@ -19,6 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL("https://ostati.ge"),
     title: { default: name, template: `%s | ${name}` },
     description: text(settings, "site_description"),
+    openGraph: { siteName: name, locale: "ka_GE", type: "website" },
+    twitter: { card: "summary_large_image" },
   };
 }
 

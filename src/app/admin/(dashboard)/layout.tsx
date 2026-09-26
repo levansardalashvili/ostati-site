@@ -34,6 +34,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <Sidebar counts={counts} />
         <div className="border-t border-slate-200 p-3">
           <p className="truncate px-3 text-xs text-slate-500">{user?.email}</p>
+          <a href="/admin/mfa/setup" className="mt-1 block rounded-lg px-3 py-1.5 text-xs text-slate-500 transition hover:bg-slate-50 hover:text-slate-700">
+            ორფაქტორიანი დაცვა (ახალი მოწყობილობა)
+          </a>
           <form action={signOut}>
             <button
               type="submit"

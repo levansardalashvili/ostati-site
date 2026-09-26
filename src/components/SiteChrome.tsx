@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Mail, Smartphone, Wrench } from 'lucide-react';
 import { MobileMenu } from './MobileMenu';
+import { safeEmail, safeHttpUrl } from '@/lib/safeUrl';
 
 type NavItem = { href: string; label: string };
 type NavPage = { slug: string; title: string; nav_label?: string; show_in_header: boolean; show_in_footer: boolean };
@@ -61,7 +62,8 @@ export function SiteHeader({ pages = [], siteName, ctaLabel = 'გადმო�
 // href-ის გარეშე (store ბმული ჯერ არ არსებობს) ბეჯი მაინც ჩანს, უბრალოდ
 // "მალე"-ს სტატუსით — არა უხილავი placeholder-ის ნაცვლად, დიზაინი
 // შესაფასებელი დარჩეს რეალური ბმულის დამატებამდეც. onDark — მუქ ფონზე.
-export function StoreBadge({ href, kind, onDark = false }: { href?: string; kind: 'play' | 'apple'; onDark?: boolean }) {
+export function StoreBadge({ href: rawHref, kind, onDark = false }: { href?: string; kind: 'play' | 'apple'; onDark?: boolean }) {
+  const href = safeHttpUrl(rawHref); // მხოლოდ http(s) — ადმინის პარამეტრიდან javascript: ბმული ვერ მოხვდება
   const label = kind === 'play' ? 'Google Play' : 'App Store';
 
   const content = (
@@ -122,9 +124,9 @@ export function SiteFooter({
           <div>
             <Logo light name={siteName} />
             {tagline && <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">{tagline}</p>}
-            {contactEmail && (
+            {safeEmail(contactEmail) && (
               <a
-                href={`mailto:${contactEmail}`}
+                href={`mailto:${safeEmail(contactEmail)}`}
                 className="mt-5 inline-flex items-center gap-2 text-sm text-slate-300 transition hover:text-white"
               >
                 <Mail size={15} /> {contactEmail}

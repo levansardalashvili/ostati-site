@@ -17,6 +17,7 @@ const georgian = Noto_Sans_Georgian({
 export const metadata: Metadata = {
   title: "Ostati Admin",
   description: "Ostati-ის ადმინისტრირების პანელი",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {

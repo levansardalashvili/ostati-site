@@ -6,6 +6,10 @@ import { getHelpArticles, getHelpCategories } from '@/lib/supabase';
 
 export const revalidate = 60;
 
+export async function generateStaticParams() {
+  return (await getHelpCategories()).map((c) => ({ category: c.id }));
+}
+
 type Props = { params: Promise<{ category: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
