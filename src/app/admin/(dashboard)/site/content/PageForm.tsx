@@ -15,6 +15,7 @@ export type PageInitial = {
   is_published: boolean;
   show_in_header: boolean;
   show_in_footer: boolean;
+  in_legal: boolean;
   sort_order: number;
 };
 
@@ -117,6 +118,9 @@ export function PageForm({ mode, initial }: { mode: 'create' | 'edit'; initial: 
               </label>
               <label className="flex items-center gap-2">
                 <input type="checkbox" name="show_in_footer" defaultChecked={initial.show_in_footer} /> ჩანდეს ფუტერში
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" name="in_legal" defaultChecked={initial.in_legal} /> სამართლებრივი ცენტრის დოკუმენტი (ჩანს /legal-ზე და „დაკავშირებულ დოკუმენტებში“)
               </label>
               <label className="flex items-center gap-2">
                 რიგი მენიუში:

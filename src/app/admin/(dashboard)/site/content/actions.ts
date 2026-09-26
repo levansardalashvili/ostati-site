@@ -24,6 +24,7 @@ function readFields(formData: FormData) {
     is_published: formData.get('is_published') === 'on',
     show_in_header: formData.get('show_in_header') === 'on',
     show_in_footer: formData.get('show_in_footer') === 'on',
+    in_legal: formData.get('in_legal') === 'on',
     sort_order: Number.parseInt(String(formData.get('sort_order') ?? '0'), 10) || 0,
   };
 }

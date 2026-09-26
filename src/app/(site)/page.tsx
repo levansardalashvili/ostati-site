@@ -7,7 +7,7 @@ import { getCategoryIcon } from '@/lib/categoryIcons';
 import { PhoneShowcase, ScreenshotImage } from '@/components/PhoneShowcase';
 import { PhoneFrame } from '@/components/PhoneFrame';
 import { StoreBadge } from '@/components/SiteChrome';
-import { getBlocks, getCategories, getNavPages, getPage, getScreenshots, getSettings } from '@/lib/supabase';
+import { getBlocks, getCategories, getPage, getScreenshots, getSettings } from '@/lib/supabase';
 import { text } from '@/lib/siteTexts';
 
 export const revalidate = 60;
@@ -31,7 +31,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 export default async function HomePage() {
-  const [page, settings, features, steps, cta, categories, providers, screenshots, navPages] = await Promise.all([
+  const [page, settings, features, steps, cta, categories, providers, screenshots] = await Promise.all([
     getPage('home'),
     getSettings(),
     getBlocks('home_features'),
@@ -40,7 +40,6 @@ export default async function HomePage() {
     getCategories(),
     getPage('home_providers'),
     getScreenshots(),
-    getNavPages(),
   ]);
   if (!page) notFound();
 
@@ -188,11 +187,9 @@ export default async function HomePage() {
               <p className="text-sm font-semibold uppercase tracking-wider text-blue-200">{text(settings, 'home_providers_eyebrow')}</p>
               <h2 className="mt-2 text-2xl font-bold leading-tight sm:text-3xl">{providers.title}</h2>
               {providerIntro && <p className="mt-4 text-blue-100">{providerIntro}</p>}
-              {navPages.some((p) => p.slug === 'for-providers') && (
-                <Link href="/for-providers" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white underline-offset-4 hover:underline">
-                  ვრცლად ოსტატებისთვის <ArrowRight size={15} />
-                </Link>
-              )}
+              <Link href="/how-it-works#providers" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white underline-offset-4 hover:underline">
+                ვრცლად: როგორ მუშაობს ოსტატისთვის <ArrowRight size={15} />
+              </Link>
             </div>
             <ul className="mt-8 space-y-4 lg:mt-0">
               {providerPoints.map((p) => (

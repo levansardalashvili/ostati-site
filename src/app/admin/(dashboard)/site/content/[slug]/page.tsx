@@ -7,6 +7,8 @@ const SYSTEM_NOTES: Record<string, string> = {
   home: 'მთავარი გვერდის სათაური და შესავალი ტექსტი (hero). სათაურში „—“ ბეჯს და დიდ სათაურს ყოფს.',
   home_cta: 'მთავარი გვერდის ბოლო „გადმოწერე“ ბლოკის სათაური და ტექსტი.',
   home_providers: '„ოსტატებისთვის“ ბლოკი მთავარზე: სათაური, პირველი აბზაცი და სია (- პუნქტები).',
+  hiw_customers: '„როგორ მუშაობს“ გვერდის ნაწილი მომხმარებლისთვის: სათაური (სექციის სახელი) და ვრცელი ტექსტი (### ქვესათაურებით). ნაბიჯების ბარათები რედაქტირდება „გვერდის სექციებიდან“.',
+  hiw_providers: '„როგორ მუშაობს“ გვერდის ნაწილი ოსტატისთვის: სათაური (სექციის სახელი) და ვრცელი ტექსტი (### ქვესათაურებით). ნაბიჯების ბარათები რედაქტირდება „გვერდის სექციებიდან“.',
   'how-it-works': '„როგორ მუშაობს“ გვერდის სათაური და შესავალი. ნაბიჯები რედაქტირდება „გვერდის სექციებიდან“.',
 };
 
@@ -15,7 +17,7 @@ export default async function EditSitePage({ params }: { params: Promise<{ slug:
   const supabase = await createClient();
   const { data: page } = await supabase
     .from('site_pages')
-    .select('slug, kind, title, content, meta_description, nav_label, is_published, show_in_header, show_in_footer, sort_order')
+    .select('slug, kind, title, content, meta_description, nav_label, is_published, show_in_header, show_in_footer, in_legal, sort_order')
     .eq('slug', slug)
     .single();
   if (!page) notFound();

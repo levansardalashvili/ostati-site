@@ -28,6 +28,21 @@ export async function getPage(slug: string): Promise<SitePage | null> {
   return data;
 }
 
+export type LegalDoc = { slug: string; title: string; meta_description: string };
+
+// სამართლებრივი ცენტრის დოკუმენტები (ადმინში ჩართული in_legal), ცენტრის რიგით
+export async function getLegalPages(): Promise<LegalDoc[]> {
+  const { data } = await supabase()
+    .from('site_pages')
+    .select('slug, title, meta_description')
+    .eq('kind', 'page')
+    .eq('is_published', true)
+    .eq('in_legal', true)
+    .order('sort_order', { ascending: true })
+    .order('title', { ascending: true });
+  return data ?? [];
+}
+
 export type NavPage = { slug: string; title: string; nav_label: string; show_in_header: boolean; show_in_footer: boolean };
 
 // გამოქვეყნებული თავისუფალი გვერდები — ჰედერის/ფუტერის მენიუსა და sitemap-ისთვის (RLS დრაფტს anon-ს არ აძლევს)
@@ -95,4 +110,25 @@ export function screenshotUrl(path: string): string {
 export async function getScreenshots(): Promise<SiteScreenshot[]> {
   const { data } = await supabase().from('site_screenshots').select('id, path, alt').order('sort_order', { ascending: true });
   return (data ?? []).map((s) => ({ id: s.id, alt: s.alt, url: screenshotUrl(s.path) }));
+}
+
+// დახმარების ცენტრი (0132): კატეგორიები და სტატიები — ადმინიდან იმართება, საჯაროდ ჩანს მხოლოდ გამოქვეყნებული (RLS)
+export type HelpCategory = { id: string; title: string; description: string; icon_key: string };
+export type HelpArticle = { id: string; category_id: string; slug: string; title: string; summary: string; content: string };
+
+export async function getHelpCategories(): Promise<HelpCategory[]> {
+  const { data } = await supabase()
+    .from('help_categories')
+    .select('id, title, description, icon_key')
+    .order('sort_order', { ascending: true });
+  return data ?? [];
+}
+
+// ყველა გამოქვეყნებული სტატია (რამდენიმე ათეული — ძებნა და რაოდენობა კოდში ითვლება)
+export async function getHelpArticles(): Promise<HelpArticle[]> {
+  const { data } = await supabase()
+    .from('help_articles')
+    .select('id, category_id, slug, title, summary, content')
+    .order('sort_order', { ascending: true });
+  return data ?? [];
 }

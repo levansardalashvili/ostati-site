@@ -15,6 +15,7 @@ const AREAS = [
       { href: '/admin/app/regions', label: 'რეგიონები' },
       { href: '/admin/app/verification', label: 'ვერიფიკაციები' },
       { href: '/admin/app/reports', label: 'რეპორტები' },
+      { href: '/admin/app/support', label: 'მიმართვები' },
       { href: '/admin/app/reviews', label: 'შეფასებები' },
       { href: '/admin/app/disputes', label: 'დავები' },
       { href: '/admin/app/broadcasts', label: 'შეტყობინება' },
@@ -31,6 +32,7 @@ const AREAS = [
       { href: '/admin/site/content', label: 'გვერდები და პარამეტრები' },
       { href: '/admin/site/blocks', label: 'გვერდის სექციები' },
       { href: '/admin/site/screenshots', label: 'აპის ეკრანები' },
+      { href: '/admin/site/help', label: 'დახმარების ცენტრი' },
     ],
   },
 ];

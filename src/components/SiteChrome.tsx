@@ -9,6 +9,8 @@ type NavPage = { slug: string; title: string; nav_label?: string; show_in_header
 const FIXED_NAV: NavItem[] = [
   { href: '/services', label: 'სერვისები' },
   { href: '/how-it-works', label: 'როგორ მუშაობს' },
+  { href: '/legal', label: 'პოლიტიკები' },
+  { href: '/support', label: 'დახმარება' },
 ];
 
 const toItem = (p: NavPage): NavItem => ({ href: `/${p.slug}`, label: p.nav_label || p.title });

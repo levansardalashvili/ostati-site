@@ -11,16 +11,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // ლოდინში მყოფი საქმეები (ბეჯები მენიუში) — layout ყოველ ნავიგაციაზე თავიდან ითვლის
   const open = (table: string, col: string, value: string) =>
     supabase.from(table).select("id", { count: "exact", head: true }).eq(col, value);
-  const [ver, jobRep, chatRep, disp] = await Promise.all([
+  const [ver, jobRep, chatRep, disp, sup] = await Promise.all([
     open("provider_profiles", "verification_status", "pending"),
     open("job_reports", "status", "open"),
     open("chat_reports", "status", "open"),
     open("job_posts", "status", "disputed"),
+    open("support_requests", "status", "new"),
   ]);
   const counts = {
     "/admin/app/verification": ver.count ?? 0,
     "/admin/app/reports": (jobRep.count ?? 0) + (chatRep.count ?? 0),
     "/admin/app/disputes": disp.count ?? 0,
+    "/admin/app/support": sup.count ?? 0,
   };
 
   return (

@@ -3,7 +3,8 @@ import { BlocksEditor, type BlockItem } from './BlocksEditor';
 
 const GROUPS = [
   { key: 'home_features', label: 'Feature-ბარათები (მთავარი გვერდი)' },
-  { key: 'how_it_works_steps', label: '"როგორ მუშაობს" ნაბიჯები' },
+  { key: 'how_it_works_steps', label: '"როგორ მუშაობს" — მომხმარებლის ნაბიჯები' },
+  { key: 'how_it_works_provider_steps', label: '"როგორ მუშაობს" — ოსტატის ნაბიჯები' },
 ];
 
 export default async function SiteBlocksPage() {

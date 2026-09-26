@@ -33,6 +33,13 @@ const ACTIONS: Record<string, string> = {
   site_screenshot_insert: 'საიტი: ეკრანის დამატება',
   site_screenshot_update: 'საიტი: ეკრანის რიგის ცვლილება',
   site_screenshot_delete: 'საიტი: ეკრანის წაშლა',
+  help_article_insert: 'დახმარება: სტატიის დამატება',
+  help_article_update: 'დახმარება: სტატიის ცვლილება',
+  help_article_delete: 'დახმარება: სტატიის წაშლა',
+  help_category_insert: 'დახმარება: კატეგორიის დამატება',
+  help_category_update: 'დახმარება: კატეგორიის ცვლილება',
+  help_category_delete: 'დახმარება: კატეგორიის წაშლა',
+  support_request_update: 'მიმართვის სტატუსი',
   chat_view: 'რეპორტირებული საუბრის ნახვა',
 };
 
@@ -60,6 +67,13 @@ function summarize(action: string, d: Details): string {
     case 'site_page_insert':
     case 'site_page_update':
     case 'site_page_delete': return `${d.title}${d.published === false ? ' · დრაფტი' : ''}`;
+    case 'help_article_insert':
+    case 'help_article_update':
+    case 'help_article_delete':
+    case 'help_category_insert':
+    case 'help_category_update':
+    case 'help_category_delete': return `${d.title ?? ''}${d.published === false ? ' · დრაფტი' : ''}`;
+    case 'support_request_update': return String(d.status ?? '');
     case 'site_screenshot_insert':
     case 'site_screenshot_update':
     case 'site_screenshot_delete': return String(d.path ?? '');

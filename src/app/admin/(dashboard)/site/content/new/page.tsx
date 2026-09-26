@@ -22,6 +22,7 @@ export default function NewSitePage() {
             is_published: true,
             show_in_header: false,
             show_in_footer: true,
+            in_legal: false,
             sort_order: 10,
           }}
         />

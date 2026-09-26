@@ -12,6 +12,7 @@ export type ActionResult = { error?: string };
 const PUBLIC_PATHS: Record<string, string[]> = {
   home_features: ['/'],
   how_it_works_steps: ['/', '/how-it-works'],
+  how_it_works_provider_steps: ['/how-it-works'],
 };
 
 function revalidatePublic(blockKey: string) {
