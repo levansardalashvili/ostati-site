@@ -21,6 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
     description: text(settings, "site_description"),
     openGraph: { siteName: name, locale: "ka_GE", type: "website" },
     twitter: { card: "summary_large_image" },
+    icons: {
+      icon: [{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
   };
 }
 

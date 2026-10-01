@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "Ostato Admin",
   description: "Ostato-ის ადმინისტრირების პანელი",
   robots: { index: false, follow: false },
+  icons: {
+    icon: [{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Smartphone, Wrench } from 'lucide-react';
+import { Mail, Smartphone } from 'lucide-react';
 import { MobileMenu } from './MobileMenu';
 import { safeEmail, safeHttpUrl } from '@/lib/safeUrl';
 
@@ -21,8 +21,9 @@ const footerNav = (pages: NavPage[]) => [...FIXED_NAV, ...pages.filter((p) => p.
 export function Logo({ className = '', light = false, name = 'Ostato' }: { className?: string; light?: boolean; name?: string }) {
   return (
     <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm shadow-blue-600/30">
-        <Wrench size={18} strokeWidth={2.3} />
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-sm shadow-blue-600/30">
+        {/* eslint-disable-next-line @next/next/no-img-element -- fixed brand-mark SVG, next/image adds no value here */}
+        <img src="/logo-mark-white.svg" alt="" className="h-5 w-5" />
       </span>
       <span className={`text-xl font-bold tracking-tight ${light ? 'text-white' : 'text-slate-900'}`}>{name}</span>
     </Link>
