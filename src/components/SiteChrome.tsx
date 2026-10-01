@@ -22,8 +22,8 @@ export function Logo({ className = '', light = false, name = 'Ostato' }: { class
   return (
     <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-sm shadow-blue-600/30">
-        {/* eslint-disable-next-line @next/next/no-img-element -- fixed brand-mark SVG, next/image adds no value here */}
-        <img src="/logo-mark-white.svg" alt="" className="h-5 w-5" />
+        {/* eslint-disable-next-line @next/next/no-img-element -- fixed brand-mark raster, next/image adds no value here */}
+        <img src="/logo-mark-white.png" alt="" className="h-5 w-5" />
       </span>
       <span className={`text-xl font-bold tracking-tight ${light ? 'text-white' : 'text-slate-900'}`}>{name}</span>
     </Link>
