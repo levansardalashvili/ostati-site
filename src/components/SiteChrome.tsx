@@ -10,7 +10,7 @@ type NavPage = { slug: string; title: string; nav_label?: string; show_in_header
 const FIXED_NAV: NavItem[] = [
   { href: '/services', label: 'სერვისები' },
   { href: '/how-it-works', label: 'როგორ მუშაობს' },
-  { href: '/legal', label: 'პოლიტიკები' },
+  { href: '/legal', label: 'წესები & პირობები' },
   { href: '/support', label: 'დახმარება' },
 ];
 
