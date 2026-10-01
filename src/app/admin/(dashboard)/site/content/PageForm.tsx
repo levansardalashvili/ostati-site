@@ -56,7 +56,7 @@ export function PageForm({ mode, initial }: { mode: 'create' | 'edit'; initial: 
         <div>
           <label className="block text-xs font-medium text-slate-500">მისამართი (URL)</label>
           <div className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-            <span>ostati.ge/</span>
+            <span>ostato.app/</span>
             <input name="slug" required placeholder="about-us" pattern="[a-z0-9]+(-[a-z0-9]+)*" className={`${input} !mt-0 max-w-xs`} />
           </div>
           <p className="mt-1 text-xs text-slate-400">პატარა ლათინური ასოები, ციფრები და დეფისი. შექმნის შემდეგ ვეღარ შეიცვლება.</p>

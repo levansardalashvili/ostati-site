@@ -18,7 +18,7 @@ const toItem = (p: NavPage): NavItem => ({ href: `/${p.slug}`, label: p.nav_labe
 const headerNav = (pages: NavPage[]) => [...FIXED_NAV, ...pages.filter((p) => p.show_in_header).map(toItem)];
 const footerNav = (pages: NavPage[]) => [...FIXED_NAV, ...pages.filter((p) => p.show_in_footer).map(toItem)];
 
-export function Logo({ className = '', light = false, name = 'Ostati' }: { className?: string; light?: boolean; name?: string }) {
+export function Logo({ className = '', light = false, name = 'Ostato' }: { className?: string; light?: boolean; name?: string }) {
   return (
     <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm shadow-blue-600/30">
@@ -106,7 +106,7 @@ export function SiteFooter({
   contactEmail,
   tagline,
   pages = [],
-  siteName = 'Ostati',
+  siteName = 'Ostato',
   copyright = 'ყველა უფლება დაცულია.',
 }: {
   playStoreUrl?: string;

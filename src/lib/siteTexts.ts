@@ -18,13 +18,13 @@ export const SITE_TEXTS: SiteTextDef[] = [
   // ბმულები და კონტაქტი
   { key: 'play_store_url', label: 'Google Play ბმული', group: 'ბმულები და კონტაქტი', default: '', allowEmpty: true, placeholder: 'https://play.google.com/store/apps/details?id=...' },
   { key: 'app_store_url', label: 'App Store ბმული', group: 'ბმულები და კონტაქტი', default: '', allowEmpty: true, placeholder: 'https://apps.apple.com/app/...' },
-  { key: 'contact_email', label: 'საკონტაქტო ელფოსტა', group: 'ბმულები და კონტაქტი', default: '', allowEmpty: true, placeholder: 'info@ostati.ge', hint: 'ჩანს ფუტერში და გვერდებში, სადაც {{contact_email}} წერია' },
+  { key: 'contact_email', label: 'საკონტაქტო ელფოსტა', group: 'ბმულები და კონტაქტი', default: '', allowEmpty: true, placeholder: 'info@ostato.app', hint: 'ჩანს ფუტერში და გვერდებში, სადაც {{contact_email}} წერია' },
 
   // ზოგადი
-  { key: 'site_name', label: 'საიტის სახელი (ლოგო, ბრაუზერის სათაური)', group: 'ზოგადი', default: 'Ostati' },
-  { key: 'site_description', label: 'საიტის აღწერა (Google-ისთვის)', group: 'ზოგადი', default: 'Ostati აკავშირებს მომხმარებლებს ადგილობრივ ოსტატებთან.', multiline: true },
+  { key: 'site_name', label: 'საიტის სახელი (ლოგო, ბრაუზერის სათაური)', group: 'ზოგადი', default: 'Ostato' },
+  { key: 'site_description', label: 'საიტის აღწერა (Google-ისთვის)', group: 'ზოგადი', default: 'Ostato აკავშირებს მომხმარებლებს ადგილობრივ ოსტატებთან.', multiline: true },
   { key: 'header_cta', label: 'ჰედერის ღილაკი', group: 'ზოგადი', default: 'გადმოწერე' },
-  { key: 'footer_tagline', label: 'ფუტერის მოკლე აღწერა', group: 'ზოგადი', default: 'Ostati აკავშირებს მომხმარებლებს სანდო, ადგილობრივ ოსტატებთან — სანტექნიკოსი, ელექტრიკოსი და სხვა.', multiline: true, allowEmpty: true },
+  { key: 'footer_tagline', label: 'ფუტერის მოკლე აღწერა', group: 'ზოგადი', default: 'Ostato აკავშირებს მომხმარებლებს სანდო, ადგილობრივ ოსტატებთან — სანტექნიკოსი, ელექტრიკოსი და სხვა.', multiline: true, allowEmpty: true },
   { key: 'copyright_text', label: 'ფუტერის ქვედა ტექსტი', group: 'ზოგადი', default: 'ყველა უფლება დაცულია.', hint: 'წინ ავტომატურად ემატება © წელი და საიტის სახელი' },
 
   // მთავარი გვერდი
@@ -32,7 +32,7 @@ export const SITE_TEXTS: SiteTextDef[] = [
   { key: 'home_services_eyebrow', label: 'სერვისების ბლოკი — პატარა სათაური', group: 'მთავარი გვერდი', default: 'სერვისები' },
   { key: 'home_services_title', label: 'სერვისების ბლოკი — სათაური', group: 'მთავარი გვერდი', default: 'სახლის ნებისმიერი სამუშაო — ერთ აპში' },
   { key: 'home_services_link', label: 'სერვისების ბლოკი — ბმულის ტექსტი', group: 'მთავარი გვერდი', default: 'ყველა სერვისი' },
-  { key: 'home_features_eyebrow', label: 'უპირატესობების ბლოკი — პატარა სათაური', group: 'მთავარი გვერდი', default: 'რატომ Ostati' },
+  { key: 'home_features_eyebrow', label: 'უპირატესობების ბლოკი — პატარა სათაური', group: 'მთავარი გვერდი', default: 'რატომ Ostato' },
   { key: 'home_features_title', label: 'უპირატესობების ბლოკი — სათაური', group: 'მთავარი გვერდი', default: 'სანდო, გამჭვირვალე და მარტივი' },
   { key: 'home_steps_eyebrow', label: 'ნაბიჯების ბლოკი — პატარა სათაური', group: 'მთავარი გვერდი', default: 'ნაბიჯები' },
   { key: 'home_steps_title', label: 'ნაბიჯების ბლოკი — სათაური', group: 'მთავარი გვერდი', default: 'როგორ მუშაობს' },
@@ -41,7 +41,7 @@ export const SITE_TEXTS: SiteTextDef[] = [
 
   // სერვისები
   { key: 'services_title', label: 'გვერდის სათაური', group: 'სერვისების გვერდი', default: 'სერვისები' },
-  { key: 'services_intro', label: 'შესავალი ტექსტი', group: 'სერვისების გვერდი', default: 'Ostati-ზე იპოვი ოსტატს ნებისმიერი სახლის სამუშაოსთვის — {{categories}} კატეგორია.', multiline: true, hint: '{{categories}} იცვლება აქტიური კატეგორიების რაოდენობით' },
+  { key: 'services_intro', label: 'შესავალი ტექსტი', group: 'სერვისების გვერდი', default: 'Ostato-ზე იპოვი ოსტატს ნებისმიერი სახლის სამუშაოსთვის — {{categories}} კატეგორია.', multiline: true, hint: '{{categories}} იცვლება აქტიური კატეგორიების რაოდენობით' },
 
   // როგორ მუშაობს
   { key: 'hiw_cta_title', label: 'ქვედა ბლოკის სათაური', group: '„როგორ მუშაობს“ გვერდი', default: 'მზად ხარ დაიწყო?' },

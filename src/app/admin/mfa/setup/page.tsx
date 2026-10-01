@@ -1,7 +1,7 @@
 import { signOut } from '../../(dashboard)/actions';
 import { EnrollForm } from './EnrollForm';
 
-export const metadata = { title: 'ორფაქტორიანი დაცვის ჩართვა — Ostati Admin' };
+export const metadata = { title: 'ორფაქტორიანი დაცვის ჩართვა — Ostato Admin' };
 
 export default function MfaSetupPage() {
   return (

@@ -12,9 +12,9 @@ export default async function CategoriesPage() {
     <div>
       <h1 className="text-2xl font-semibold text-slate-900">კატეგორიები</h1>
       <p className="mt-1 text-sm text-slate-500">
-        სერვისის კატეგორიების მართვა — ცვლილება მყისიერად აისახება Ostati-ის აპშიც და{' '}
-        <a href="https://ostati.ge/services" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
-          ostati.ge/services
+        სერვისის კატეგორიების მართვა — ცვლილება მყისიერად აისახება Ostato-ის აპშიც და{' '}
+        <a href="https://ostato.app/services" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+          ostato.app/services
         </a>
         -ზეც.
       </p>

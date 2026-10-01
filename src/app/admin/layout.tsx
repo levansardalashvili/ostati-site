@@ -15,8 +15,8 @@ const georgian = Noto_Sans_Georgian({
 });
 
 export const metadata: Metadata = {
-  title: "Ostati Admin",
-  description: "Ostati-ის ადმინისტრირების პანელი",
+  title: "Ostato Admin",
+  description: "Ostato-ის ადმინისტრირების პანელი",
   robots: { index: false, follow: false },
 };
 

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getHelpArticles, getNavPages } from '@/lib/supabase';
 
-const SITE_URL = 'https://ostati.ge';
+const SITE_URL = 'https://ostato.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [pages, articles] = await Promise.all([getNavPages(), getHelpArticles()]);

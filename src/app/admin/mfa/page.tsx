@@ -1,7 +1,7 @@
 import { signOut } from '../(dashboard)/actions';
 import { ChallengeForm } from './ChallengeForm';
 
-export const metadata = { title: 'ორფაქტორიანი დადასტურება — Ostati Admin' };
+export const metadata = { title: 'ორფაქტორიანი დადასტურება — Ostato Admin' };
 
 export default function MfaChallengePage() {
   return (

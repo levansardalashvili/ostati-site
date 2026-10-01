@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = 'https://ostati.ge';
+const SITE_URL = 'https://ostato.app';
 
 export default function robots(): MetadataRoute.Robots {
   return {

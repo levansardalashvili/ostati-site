@@ -8,7 +8,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'დახმარება',
-  description: 'Ostati-ის დახმარების ცენტრი: პასუხები ხშირ კითხვებზე მომხმარებლებისთვის და ოსტატებისთვის, და მიმართვის ფორმა.',
+  description: 'Ostato-ის დახმარების ცენტრი: პასუხები ხშირ კითხვებზე მომხმარებლებისთვის და ოსტატებისთვის, და მიმართვის ფორმა.',
 };
 
 export default async function HelpCenterPage() {

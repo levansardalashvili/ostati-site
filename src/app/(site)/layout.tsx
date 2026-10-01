@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const name = text(settings, "site_name");
   return {
-    metadataBase: new URL("https://ostati.ge"),
+    metadataBase: new URL("https://ostato.app"),
     title: { default: name, template: `%s | ${name}` },
     description: text(settings, "site_description"),
     openGraph: { siteName: name, locale: "ka_GE", type: "website" },

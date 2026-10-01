@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'მოგვწერეთ — გიპასუხებთ თქვენ მიერ მითითებულ ელფოსტაზე ან ტელეფონზე.',
 };
 
-const DELETION_MESSAGE = 'მინდა ჩემი Ostati-ის ანგარიშის წაშლა. ანგარიშის ელფოსტა/ტელეფონი: ';
+const DELETION_MESSAGE = 'მინდა ჩემი Ostato-ის ანგარიშის წაშლა. ანგარიშის ელფოსტა/ტელეფონი: ';
 
 // ?topic=deletion — წაშლის მოთხოვნა ვებიდან (/delete-account-იდან): თემა და ტექსტი წინასწარაა შევსებული
 export default async function ContactPage({ searchParams }: { searchParams: Promise<{ topic?: string }> }) {

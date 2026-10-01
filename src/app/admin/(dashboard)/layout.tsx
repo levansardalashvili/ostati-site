@@ -29,7 +29,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-slate-50">
       <aside className="flex w-60 shrink-0 flex-col border-r border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-5 py-4">
-          <span className="text-base font-semibold text-slate-900">Ostati Admin</span>
+          <span className="text-base font-semibold text-slate-900">Ostato Admin</span>
         </div>
         <Sidebar counts={counts} />
         <div className="border-t border-slate-200 p-3">

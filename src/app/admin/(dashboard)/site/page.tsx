@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
 const CARDS = [
-  { href: '/admin/site/content', label: 'საიტის კონტენტი', desc: 'ostati.ge-ის გვერდები და პარამეტრები' },
+  { href: '/admin/site/content', label: 'საიტის კონტენტი', desc: 'ostato.app-ის გვერდები და პარამეტრები' },
   {
     href: '/admin/app/categories',
     label: 'სერვისები / კატეგორიები',
-    desc: 'ostati.ge/services იმავე კატეგორიებს აჩვენებს, რასაც აპი — რედაქტირდება "აპის მართვა"-დან',
+    desc: 'ostato.app/services იმავე კატეგორიებს აჩვენებს, რასაც აპი — რედაქტირდება "აპის მართვა"-დან',
   },
   {
     href: '/admin/site/blocks',
@@ -18,7 +18,7 @@ export default function SiteManagementPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold text-slate-900">საიტის მართვა</h1>
-      <p className="mt-1 text-sm text-slate-500">ostati.ge საინფორმაციო საიტის მართვა.</p>
+      <p className="mt-1 text-sm text-slate-500">ostato.app საინფორმაციო საიტის მართვა.</p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {CARDS.map((c) => (

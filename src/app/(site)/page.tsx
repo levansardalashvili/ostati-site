@@ -14,12 +14,12 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('home');
-  const title = page?.title ?? 'Ostati';
-  const description = page?.content?.slice(0, 160) || 'Ostati აკავშირებს მომხმარებლებს სანდო, ადგილობრივ ოსტატებთან.';
+  const title = page?.title ?? 'Ostato';
+  const description = page?.content?.slice(0, 160) || 'Ostato აკავშირებს მომხმარებლებს სანდო, ადგილობრივ ოსტატებთან.';
   return {
-    // absolute — home-ის title უკვე თავად ბრენდის tagline-ია (მაგ. "Ostati
+    // absolute — home-ის title უკვე თავად ბრენდის tagline-ია (მაგ. "Ostato
     // — იპოვე სანდო ოსტატი"), root layout-ის title template-ს (" %s |
-    // Ostati") არ სჭირდება მასზე დამატება, თორემ "Ostati" ორჯერ გაჩნდება.
+    // Ostato") არ სჭირდება მასზე დამატება, თორემ "Ostato" ორჯერ გაჩნდება.
     title: { absolute: title },
     description,
   };
@@ -42,7 +42,7 @@ export default async function HomePage() {
   ]);
   if (!page) notFound();
 
-  // "Ostati — იპოვე სანდო ოსტატი" → ბრენდი პატარა ბეჯში, სათაური დიდად
+  // "Ostato — იპოვე სანდო ოსტატი" → ბრენდი პატარა ბეჯში, სათაური დიდად
   const [brand, headline] = page.title.includes('—')
     ? page.title.split('—').map((s) => s.trim())
     : ['', page.title];

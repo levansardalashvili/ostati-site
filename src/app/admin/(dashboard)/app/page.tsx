@@ -41,7 +41,7 @@ export default async function AppManagementPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold text-slate-900">აპის მართვა</h1>
-      <p className="mt-1 text-sm text-slate-500">Ostati მობილური აპლიკაციის მონაცემები.</p>
+      <p className="mt-1 text-sm text-slate-500">Ostato მობილური აპლიკაციის მონაცემები.</p>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         {STATS.map((s) => (

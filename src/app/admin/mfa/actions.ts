@@ -15,8 +15,8 @@ export async function startEnroll(): Promise<EnrollStart> {
   }
   const { data, error } = await supabase.auth.mfa.enroll({
     factorType: 'totp',
-    issuer: 'Ostati Admin',
-    friendlyName: `Ostati ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
+    issuer: 'Ostato Admin',
+    friendlyName: `Ostato ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
   });
   if (error || !data) return { error: 'ვერ დაიწყო. სცადეთ ხელახლა.' };
   return { factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret };

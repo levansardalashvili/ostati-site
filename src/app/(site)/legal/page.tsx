@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'სამართლებრივი ცენტრი',
-  description: 'Ostati-ის პირობები, კონფიდენციალურობის პოლიტიკა, საზოგადოების წესები და უსაფრთხოება ერთ ადგილას.',
+  description: 'Ostato-ის პირობები, კონფიდენციალურობის პოლიტიკა, საზოგადოების წესები და უსაფრთხოება ერთ ადგილას.',
 };
 
 // ყველა დოკუმენტი, რომელსაც ადმინში „სამართლებრივი ცენტრის დოკუმენტი“ აქვს ჩართული
@@ -19,7 +19,7 @@ export default async function LegalCenterPage() {
         <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-16">
           <h1 className="break-words text-[1.7rem] font-extrabold tracking-tight text-slate-900 sm:text-4xl">სამართლებრივი ცენტრი</h1>
           <p className="mt-4 max-w-xl text-lg text-slate-600">
-            პირობები, პოლიტიკები და წესები, რომლებიც განსაზღვრავს, როგორ მუშაობს Ostati და როგორ ვიცავთ მომხმარებლებსა და ოსტატებს.
+            პირობები, პოლიტიკები და წესები, რომლებიც განსაზღვრავს, როგორ მუშაობს Ostato და როგორ ვიცავთ მომხმარებლებსა და ოსტატებს.
           </p>
         </div>
       </section>
