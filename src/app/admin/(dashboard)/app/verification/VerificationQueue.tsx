@@ -13,6 +13,8 @@ export type PendingProvider = {
   photoUrl: string | null;
   selfieUrl: string | null;
   requestedAt: string | null;
+  // 0155 — 'profile_changed': a verified Provider changed photo/name and is back for re-review
+  reviewReason: string | null;
 };
 
 export function VerificationQueue({ providers }: { providers: PendingProvider[] }) {
@@ -67,6 +69,11 @@ function ProviderCard({ provider }: { provider: PendingProvider }) {
           <p className="text-sm text-slate-500">{provider.specialty || 'სპეციალობა არ არის მითითებული'}</p>
           <p className="text-xs text-slate-400">{provider.areas || 'არეალი არ არის მითითებული'}</p>
           {provider.about && <p className="mt-2 text-sm text-slate-600">{provider.about}</p>}
+          {provider.reviewReason === 'profile_changed' && (
+            <p className="mt-2 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+              ხელახალი შემოწმება — ვერიფიკაციის შემდეგ ფოტო ან სახელი შეიცვალა. შეადარე ახალი ფოტო სელფის.
+            </p>
+          )}
           {provider.requestedAt && (
             <p className="mt-2 text-xs text-slate-400">
               მოთხოვნილია: {formatDateTime(provider.requestedAt)}

@@ -28,6 +28,25 @@ export default async function AppManagementPage() {
     head('job_posts').eq('status', 'completed'),
   ]);
 
+  // Verification is the launch bottleneck (only verified Providers can send
+  // offers) — surface the queue and how long the oldest request has waited.
+  const { data: pendingProviders } = await supabase
+    .from('provider_profiles')
+    .select('id')
+    .eq('verification_status', 'pending');
+  const pendingIds = (pendingProviders ?? []).map((p) => p.id);
+  const { data: oldestReq } = pendingIds.length
+    ? await supabase
+        .from('provider_verification_requests')
+        .select('requested_at')
+        .in('provider_id', pendingIds)
+        .order('requested_at', { ascending: true })
+        .limit(1)
+    : { data: [] as { requested_at: string }[] };
+  const oldestAt = oldestReq?.[0]?.requested_at;
+  const waitHours = oldestAt ? Math.floor((Date.now() - new Date(oldestAt).getTime()) / 3_600_000) : 0;
+  const waitLabel = waitHours >= 24 ? `${Math.floor(waitHours / 24)} დღე` : `${waitHours} საათი`;
+
   const STATS = [
     { label: 'მომხმარებლები', value: customers.count ?? 0 },
     { label: 'ოსტატები', value: providers.count ?? 0 },
@@ -42,6 +61,25 @@ export default async function AppManagementPage() {
     <div>
       <h1 className="text-2xl font-semibold text-slate-900">აპის მართვა</h1>
       <p className="mt-1 text-sm text-slate-500">Ostato მობილური აპლიკაციის მონაცემები.</p>
+
+      {pendingIds.length > 0 && (
+        <Link
+          href="/admin/app/verification"
+          className={`mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-5 shadow-sm transition hover:shadow ${
+            waitHours >= 24 ? 'border-red-300 bg-red-50' : 'border-amber-300 bg-amber-50'
+          }`}
+        >
+          <div>
+            <p className={`text-lg font-semibold ${waitHours >= 24 ? 'text-red-800' : 'text-amber-900'}`}>
+              ვერიფიკაცია ლოდინში: {pendingIds.length}
+            </p>
+            <p className={`mt-1 text-sm ${waitHours >= 24 ? 'text-red-700' : 'text-amber-800'}`}>
+              ყველაზე ძველი მოთხოვნა ელოდება {waitLabel} — ვერიფიკაციამდე ოსტატი ფასს ვერ სთავაზობს.
+            </p>
+          </div>
+          <span className="rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-slate-900">განხილვა →</span>
+        </Link>
+      )}
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         {STATS.map((s) => (

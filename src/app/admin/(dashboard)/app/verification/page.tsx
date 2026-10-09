@@ -13,12 +13,13 @@ export default async function VerificationPage() {
   const { data: requests } = providerIds.length
     ? await supabase
         .from('provider_verification_requests')
-        .select('provider_id, requested_at, selfie_path')
+        .select('provider_id, requested_at, selfie_path, review_reason')
         .in('provider_id', providerIds)
     : { data: [] };
 
   const requestedAtByProvider = Object.fromEntries((requests ?? []).map((r) => [r.provider_id, r.requested_at]));
   const selfiePathByProvider = Object.fromEntries((requests ?? []).map((r) => [r.provider_id, r.selfie_path]));
+  const reviewReasonByProvider = Object.fromEntries((requests ?? []).map((r) => [r.provider_id, r.review_reason]));
 
   // 0107 — მოთხოვნასთან ერთად ატვირთული სელფი private-media bucket-შია,
   // ადმინი კი ვერიფიკაციისთვის საკუთარი (service_role-ის გარეშე) სესიით
@@ -46,6 +47,7 @@ export default async function VerificationPage() {
       photoUrl: p.photo_url,
       selfieUrl: selfiePathByProvider[p.id] ? (selfieUrlByPath[selfiePathByProvider[p.id]] ?? null) : null,
       requestedAt: requestedAtByProvider[p.id] ?? null,
+      reviewReason: reviewReasonByProvider[p.id] ?? null,
     }))
     .sort((a, b) => (a.requestedAt ?? '').localeCompare(b.requestedAt ?? ''));
 
