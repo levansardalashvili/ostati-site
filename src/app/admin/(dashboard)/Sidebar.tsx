@@ -22,6 +22,7 @@ const AREAS = [
       { href: '/admin/app/limits', label: 'ლიმიტები' },
       { href: '/admin/app/gate', label: 'ვერსია / რეჟიმი' },
       { href: '/admin/app/audit', label: 'ჟურნალი' },
+      { href: '/admin/app/errors', label: 'აპის შეცდომები' },
     ],
   },
   {
