@@ -11,6 +11,7 @@ export type DisputedJobRow = {
   customerName: string;
   providerName: string;
   disputeReason: string | null;
+  providerResponse: string | null;
   updatedAt: string;
 };
 
@@ -56,8 +57,15 @@ function DisputeCard({ job }: { job: DisputedJobRow }) {
         <span className="font-medium">{job.providerName}</span>
       </p>
       {job.disputeReason && (
-        <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{job.disputeReason}</p>
+        <div className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <span className="font-semibold">მომხმარებელი: </span>
+          {job.disputeReason}
+        </div>
       )}
+      <div className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+        <span className="font-semibold">ოსტატი: </span>
+        {job.providerResponse ?? <span className="text-slate-400">ჯერ არ უპასუხია</span>}
+      </div>
       <p className="mt-2 text-xs text-slate-400">
         {formatDateTime(job.updatedAt)} · job: {job.id}
       </p>

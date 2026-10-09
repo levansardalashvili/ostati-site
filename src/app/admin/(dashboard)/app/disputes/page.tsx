@@ -6,7 +6,7 @@ export default async function DisputesPage() {
 
   const { data: jobs, error } = await supabase
     .from('job_posts')
-    .select('id, category, customer_id, provider_id, dispute_reason, updated_at')
+    .select('id, category, customer_id, provider_id, dispute_reason, dispute_provider_response, updated_at')
     .eq('status', 'disputed')
     .order('updated_at', { ascending: false });
 
@@ -35,6 +35,7 @@ export default async function DisputesPage() {
     customerName: nameById[j.customer_id] ?? j.customer_id,
     providerName: j.provider_id ? (nameById[j.provider_id] ?? j.provider_id) : '—',
     disputeReason: j.dispute_reason,
+    providerResponse: j.dispute_provider_response,
     updatedAt: j.updated_at,
   }));
 
